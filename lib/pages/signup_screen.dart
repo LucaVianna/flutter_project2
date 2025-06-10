@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import './home_screen.dart';
 import './login_screen.dart';
 
+// IMPORTAÇÕES DO FIREBASE
+//import 'package:firebase_auth/firebase_auth.dart';
+
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
@@ -9,9 +12,9 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>(); // Para validar Form
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _agreeTerms = false;
 
   bool _isEmailValid = false;
