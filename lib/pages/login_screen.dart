@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import './signup_screen.dart';
 import './home_screen.dart';
-import './login_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>(); // Para validar Form
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _agreeTerms = false;
 
   bool _isEmailValid = false;
   bool _passwordVisible = false;
@@ -45,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Título
                       Text(
-                        'Cadastre-se',
+                        'Log in',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -55,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       // Subtítulo
                       Text(
-                        'Identifique-se para continuar',
+                        'Coloque seus dados para continuar',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.grey,
@@ -67,18 +65,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       isLandScape
                       ? Row(
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _usernameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Usuário',
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) => value!.isEmpty ? 'Insira um usuário válido' : null,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-
                             Expanded(
                               child: TextFormField(
                                 controller: _emailController,
@@ -101,17 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         )
                       : Column(
                         children: [
-                          // Campo de nome do usário
-                          TextFormField(
-                            controller: _usernameController,
-                            decoration: InputDecoration(
-                              labelText: 'Usuário',
-                              border: OutlineInputBorder(),
-                            ),
-                            validator: (value) => value!.isEmpty ? 'Insira um usuário válido' : null,
-                          ),
-                          SizedBox(height: 15),
-
+                          
                           // Campo de email do usuário
                           TextFormField(
                             controller: _emailController,
@@ -153,32 +129,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         obscureText: !_passwordVisible,
                         validator: (value) => value!.length >= 6 ? null : 'Senha precisa de no mínimo 6 caracteres',
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: 30),
 
-                      // Checkbox para aceitar termos
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _agreeTerms,
-                            onChanged: (newValue) {
-                              setState(() {
-                                _agreeTerms = newValue!;
-                              });
-                            },
-                          ),
-                          Text(
-                            'Concordar com os Termos e Condições'
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 15),
-
-                      // Botão de cadastro
+                      // Botão de login
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate() && _agreeTerms) {
+                            if (_formKey.currentState!.validate()) {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) => HomeScreen())
@@ -203,7 +161,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           child: Text(
-                            'Cadastrar-se',
+                            'Entrar',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -220,11 +178,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           // Navegação para tela de login
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginScreen())
+                            MaterialPageRoute(builder: (context) => SignUpScreen())
                           );
                         },
                         child: Text(
-                          'Já possui uma conta? Clique aqui',
+                          'Não possui uma conta? Clique aqui',
                           style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.w500,
