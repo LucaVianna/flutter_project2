@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import './home_screen.dart';
 import './login_screen.dart';
 
-// IMPORTAÇÕES DO FIREBASE
-//import 'package:firebase_auth/firebase_auth.dart';
+import '../controllers/auth_controller.dart'; // CONTROLLER
+import 'package:provider/provider.dart'; // PROVIDER
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -17,12 +18,58 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   bool _agreeTerms = false;
 
-  bool _isEmailValid = false;
   bool _passwordVisible = false;
 
   @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  // MÉTODO PARA LIDAR COM ENVIO DE FORMULÁRIO
+  void _submitSignUpForm(BuildContext context) async {
+    // VALIDA TODOS OS CAMPOS
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // VALIDA O CHECKBOX
+    if (!_agreeTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Você precisa concordar com os Termos e Condições.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // ACESSA O AUTHCONTROLLER VIA PROVIDER
+    // 'READ' POIS CRIAMOS UM MÉTODO QUE DISPARA UMA AÇÃO
+    final authController = context.read<AuthController>();
+
+    authController.clearErrorMessage();
+
+    try {
+      await authController.signUp(
+        email: _emailController.text.trim(), 
+        password: _passwordController.text.trim(), 
+        name: _usernameController.text.trim(),
+      );
+    } catch (e) {
+      debugPrint('Erro capturado na tela de cadastro: ${e.toString()}');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final authController = context.watch<AuthController>();
+    final bool isLoading = authController.isLoading;
+    final String? errorMessage = authController.erroMessage;
+
+      return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool isLandScape = constraints.maxWidth > 600;
@@ -75,9 +122,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 controller: _usernameController,
                                 decoration: InputDecoration(
                                   labelText: 'Usuário',
-                                  border: OutlineInputBorder(),
                                 ),
-                                validator: (value) => value!.isEmpty ? 'Insira um usuário válido' : null,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty || value.trim().length < 3) {
+                                    return 'Insira um usuário válido (mín. 3 caracteres)';
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                             SizedBox(width: 10),
@@ -85,19 +136,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Expanded(
                               child: TextFormField(
                                 controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   labelText: 'Email',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: _isEmailValid
+                                  suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
                                     ? Icon(Icons.check_circle, color: Colors.green)
                                     : null
                                 ),
                                 onChanged: (value) {
                                   setState(() {
-                                    _isEmailValid = value.contains('@');
+                                    // Apenas atualizando o ícone de validação
                                   });
                                 },
-                                validator: (value) => value!.contains('@') ? null : 'Insira um email válido', 
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty || !value.contains('@')) {
+                                    return 'Insira um e-mail válido';
+                                  }
+                                  return null;
+                                },  
                               ),
                             ), 
                           ],
@@ -109,9 +165,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             controller: _usernameController,
                             decoration: InputDecoration(
                               labelText: 'Usuário',
-                              border: OutlineInputBorder(),
                             ),
-                            validator: (value) => value!.isEmpty ? 'Insira um usuário válido' : null,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty || value.trim().length < 3) {
+                                return 'Insira um usuário válido (mín. 3 caracteres)';
+                              }
+                              return null;
+                            } 
                           ),
                           SizedBox(height: 15),
 
@@ -120,17 +180,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             controller: _emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
-                              border: OutlineInputBorder(),
-                              suffixIcon: _isEmailValid
+                              suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
                                 ? Icon(Icons.check_circle, color: Colors.green)
                                 : null
                             ),                            
                             onChanged: (value) {
                               setState(() {
-                                _isEmailValid = value.contains('@');
+                                // Apenas atualizando o ícone de validação
                               });
                             },
-                            validator: (value) => value!.contains('@') ? null : 'Insira um email válido',
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty || !value.contains('@')) {
+                                return 'Insira um e-mail válido';
+                              }
+                              return null;
+                            }, 
                           ),
                         ],
                       ),
@@ -141,7 +205,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _passwordController,
                         decoration: InputDecoration(
                           labelText: 'Senha',
-                          border: OutlineInputBorder(),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _passwordVisible ? Icons.visibility : Icons.visibility_off,
@@ -154,7 +217,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         obscureText: !_passwordVisible,
-                        validator: (value) => value!.length >= 6 ? null : 'Senha precisa de no mínimo 6 caracteres',
+                        validator: (value) {
+                          if (value == null || value.length < 6) {
+                            return 'A senha precisa ter no mínimo 6 caracteres';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 15),
 
@@ -169,50 +237,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               });
                             },
                           ),
-                          Text(
-                            'Concordar com os Termos e Condições'
+                          Expanded(
+                            child: Text(
+                              'Concordar com os Termos e Condições',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
                           ),
                         ],
                       ),
                       SizedBox(height: 15),
 
+                      // MENSAGEM DE ERRO (VISÍVEL SE HOUVER ERRO NO AUTHCONTROLLER)
+                      if (errorMessage != null)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 15),
+                          child: Text(
+                            errorMessage,
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      
                       // Botão de cadastro
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate() && _agreeTerms) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => HomeScreen())
-                              );
-                              // final userData = {
-                              //  'username': _usernameController.text,
-                              //  'email': _emailController.text,
-                              //  'password': _passwordController.text,
-                              // };
-
-                              // Navigator.push(
-                              // context,
-                              // MaterialPageRoute(builder: (context) => NextScreen(userData));
-                              // );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            // Cor definida no ThemeData
-                            padding: EdgeInsets.all(15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          child: Text(
-                            'Cadastrar-se',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              // Cor definida no ThemeData
-                            ),
-                          ),
+                          onPressed: isLoading
+                            ? null
+                            : () => _submitSignUpForm(context),
+                          child: isLoading
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Text('Cadastrar-se'),
                         ),
                       ),
                       SizedBox(height: 15),
@@ -223,13 +282,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           // Navegação para tela de login
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginScreen())
+                            MaterialPageRoute(builder: (context) => const LoginScreen())
                           );
                         },
                         child: Text(
                           'Já possui uma conta? Clique aqui',
                           style: TextStyle(
-                            color: Colors.green,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

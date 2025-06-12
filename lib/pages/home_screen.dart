@@ -7,6 +7,8 @@ import './home/profile_screen.dart';
 import './utils/funcs.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -19,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> cartItems = [];
 
   // Inicia a lista de telas da Bottom Navigation Bar vazia
-  final List<Widget> _screens = [];
+  late final List<Widget> _screens = [];
 
   @override
   // Preenche a lista de telas da Bottom Navigation Bar
@@ -48,17 +50,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       // Tela inidicada pela Bottom Navigation Bar
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.green,
+        selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
         showSelectedLabels: true,
         showUnselectedLabels: false,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Loja'),
           BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explorar'),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Carrinho'),
