@@ -9,7 +9,7 @@ import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // IMPORTAÇÕES DO PROVIDER e CONTROLLER
-import 'package:provider/provider.dart'; // PROVIDER
+import 'package:provider/provider.dart';
 import 'features/auth/presentation/controller/auth_controller.dart';
 import 'features/home/presentation/providers/cart_provider.dart';
 
@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         // THEME GERAL
         primaryColor: const Color(0xFF4AA66C),
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: MaterialColor(
+          primarySwatch: const MaterialColor(
             0xFF4AA66C,
             <int, Color>{
               50: Color(0xFFE8F5E9),
