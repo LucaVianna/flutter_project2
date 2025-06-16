@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './login_screen.dart';
+import 'login_screen.dart';
 
-import '../controllers/auth_controller.dart'; // CONTROLLER
+import '../controller/auth_controller.dart'; // CONTROLLER
 import 'package:provider/provider.dart'; // PROVIDER
 
 class SignUpScreen extends StatefulWidget {
@@ -67,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     final authController = context.watch<AuthController>();
     final bool isLoading = authController.isLoading;
-    final String? errorMessage = authController.erroMessage;
+    final String? errorMessage = authController.errorMessage;
 
       return Scaffold(
       body: LayoutBuilder(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../services/auth_service.dart';
-import '../models/user_model.dart';
+import '../../../../core/services/auth_service.dart';
+import '../../../../core/models/user_model.dart';
 
 class AuthController extends ChangeNotifier{
   final AuthService _authService = AuthService();
@@ -12,7 +12,7 @@ class AuthController extends ChangeNotifier{
 
   // GETTERS PARA ACESSAR O ESTADO A PARTIR DA UI
   bool get isLoading => _isLoading;
-  String? get erroMessage => _errorMessage;
+  String? get errorMessage => _errorMessage;
   UserModel? get currentUser => _currentUser;
 
   // CONSTRUTOR DO CONTROLADOR

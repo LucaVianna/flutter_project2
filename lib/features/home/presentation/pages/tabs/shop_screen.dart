@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './product_screen.dart';
+import 'product_screen.dart';
 
 class ShopScreen extends StatefulWidget {
   final Function(Map<String, dynamic>, int) addToCart;

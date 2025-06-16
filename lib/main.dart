@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './pages/welcome_screen.dart';
-import './pages/home_screen.dart';
+import 'features/auth/presentation/pages/welcome_screen.dart';
+import 'features/home/presentation/pages/home_screen.dart';
 
 // IMPORTAÇÕES DO FIREBASE
 import 'firebase_options.dart';
@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 // IMPORTAÇÕES DO PROVIDER e CONTROLLER
 import 'package:provider/provider.dart'; // PROVIDER
-import './controllers/auth_controller.dart'; // CONTROLLER
+import 'features/auth/presentation/controller/auth_controller.dart'; // CONTROLLER
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

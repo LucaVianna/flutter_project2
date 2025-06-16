@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import './signup_screen.dart';
-import './home_screen.dart';
+import 'signup_screen.dart';
+
+import '../controller/auth_controller.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,11 +16,43 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _isEmailValid = false;
   bool _passwordVisible = false;
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  // MÉTODO PARA LIDAR COM ENVIO DO FORM LOGIN
+  void _submitLoginForm(BuildContext context) async {
+    // VALIDA TODOS OS CAMPOS
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final authController = context.read<AuthController>();
+
+    authController.clearErrorMessage();
+
+    try {
+      // CHAMA O SIGNIN DO AUTHCONTROLLER
+      await authController.signIn(
+        email: _emailController.text.trim(), 
+        password: _passwordController.text.trim(),
+      );
+    } catch (e) {
+      debugPrint('Erro capturado na tela de login: ${e.toString()}');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final authController = context.watch<AuthController>();
+    final bool isLoading = authController.isLoading;
+    final String? errorMessage = authController.errorMessage;
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -68,17 +102,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          border: OutlineInputBorder(),
-                          suffixIcon: _isEmailValid
+                          suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
                             ? Icon(Icons.check_circle, color: Colors.green)
                             : null
                         ),                            
                         onChanged: (value) {
                           setState(() {
-                            _isEmailValid = value.contains('@');
+                            // Apenas para atualizar o ícone de validação visual
                           });
                         },
-                        validator: (value) => value!.contains('@') ? null : 'Insira um email válido',
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty || !value.contains('@')) {
+                            return 'Insira um e-mail válido';
+                          }
+                          return null;
+                        },
                       ),
                     ],
                   ),
@@ -89,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: 'Senha',
-                      border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _passwordVisible ? Icons.visibility : Icons.visibility_off,
@@ -102,47 +139,40 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     obscureText: !_passwordVisible,
-                    validator: (value) => value!.length >= 6 ? null : 'Senha precisa de no mínimo 6 caracteres',
+                    validator: (value) {
+                      if (value == null || value.length < 6) {
+                        return 'A senha precisa ter no mínimo 6 caracteres';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 30),
 
+                  if (errorMessage != null)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 15
+                      ),
+                      child: Text(
+                        errorMessage,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  
                   // Botão de login
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomeScreen())
-                          );
-                          // final userData = {
-                          //  'username': _usernameController.text,
-                          //  'email': _emailController.text,
-                          //  'password': _passwordController.text,
-                          // };
-
-                          // Navigator.push(
-                          // context,
-                          // MaterialPageRoute(builder: (context) => NextScreen(userData));
-                          // );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        // Cor definida no ThemeData
-                        padding: EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child: Text(
-                        'Entrar',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          // Cor definida no ThemeData
-                        ),
-                      ),
+                      onPressed: isLoading
+                        ? null
+                        : () => _submitLoginForm(context),
+                      child: isLoading
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text('Entrar')
                     ),
                   ),
                   SizedBox(height: 15),
@@ -153,13 +183,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Navegação para tela de login
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen())
+                        MaterialPageRoute(builder: (context) => const SignUpScreen())
                       );
                     },
                     child: Text(
                       'Não possui uma conta? Clique aqui',
                       style: TextStyle(
-                        color: Colors.green,
+                        color:Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
