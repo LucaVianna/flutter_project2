@@ -55,7 +55,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                       ),
                       Text(
-                        widget.product.description,
+                        widget.product.weight,
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.grey

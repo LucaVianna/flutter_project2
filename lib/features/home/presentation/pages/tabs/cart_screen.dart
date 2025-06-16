@@ -71,7 +71,6 @@ class CartScreen extends StatelessWidget {
                       ],
                     ),
                     subtitle: Row(
-                      // mainAxisAlignment: MainAxisAlignment.start, (TAVLEZ VOLTAR ESTA LINHA)
                       children: [
                         IconButton(
                           icon: Icon(Icons.remove),
@@ -100,36 +99,7 @@ class CartScreen extends StatelessWidget {
                     ), 
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      // mainAxisSize: MainAxisSize.min, (TAVLEZ VOLTAR ESTAS LINHAS)
-                      // children: [
-                      //   Flexible(
-                      //     child: IconButton(
-                      //       icon: Icon(
-                      //         Icons.close,
-                      //         size: 18,
-                      //       ),
-                      //       onPressed: () {
-                      //         widget.removeFromCart(item['name']);
-                      //         updateUI();                    
-                      //       }
-                      //     ),
-                      //   ),
-                      //   Text(
-                      //     'R\$${item['price'].toStringAsFixed(2)}',
-                      //     style: TextStyle(
-                      //       fontSize: 14,
-                      //       fontWeight: FontWeight.bold,
-                      //     ),
-                      //   ),
-                      // ],
                       children: [
-                        Text(
-                          'R\$${item.subtotal.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
                         GestureDetector(
                           onTap: () {
                             // Usa o provider para remover o item
@@ -139,6 +109,13 @@ class CartScreen extends StatelessWidget {
                             Icons.close,
                             size: 18,
                             color: Colors.red,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'R\$${item.subtotal.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
