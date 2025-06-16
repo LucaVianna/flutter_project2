@@ -19,16 +19,27 @@ class AuthController extends ChangeNotifier{
 
   // CONSTRUTOR DO CONTROLADOR
   AuthController() {
-    // ESCUTA O STREAM DE MUDANÇAS DE ESTADO DE AUTENTICAÇÃO
-    _authService.authStateChanges.listen((User? firebaseUser) async {
-      if (firebaseUser != null) {
-        // SE HÁ UM USUÁRIO LOGADO, TENTA BUSCAR SEU PERFIIL
-        _currentUser = await _authService.getUserProfile(firebaseUser.uid);
-      } else {
-        _currentUser = null;
-      }
-      notifyListeners(); // NOTIFICA OS WIDGETS QUE ESTÃO OUVINDO
-    });
+    _init();
+  }
+
+  void _init() async {
+    // 1. Informa a UI que estamos em processo de verificação inicial
+    _isLoading = true;
+    notifyListeners();
+
+    // 2. Escuta a primeira resposta do stream de autenticação
+    User? firebaseUser = await _authService.authStateChanges.first;
+
+    if (firebaseUser != null) {
+      // 3. Se há um usuário logado, busca seu perfil
+      _currentUser = await _authService.getUserProfile(firebaseUser.uid);
+    } else {
+      _currentUser = null;
+    }
+
+    // 4. Informa a UI que o processo de verificação inicial terminou
+    _isLoading = false;
+    notifyListeners();
   }
 
   // MÉTODO PARA LIDAR COM O CADASTRO DE USUÁRIO (SIGNUP-SCREEN)
