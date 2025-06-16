@@ -1,3 +1,5 @@
+// Caminho lib/features/home/presentation/pages/tabs/product_screen.dart
+
 import 'package:flutter/material.dart';
 
 class ProductScreen extends StatefulWidget {

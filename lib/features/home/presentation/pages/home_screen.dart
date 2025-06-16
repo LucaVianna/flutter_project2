@@ -1,3 +1,5 @@
+// Caminho lib/features/home/presentation/pages/home_screen.dart
+
 import 'package:flutter/material.dart';
 import 'tabs/shop_screen.dart';
 import 'tabs/favorite_screen.dart';

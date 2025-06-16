@@ -1,3 +1,5 @@
+// Caminho lib/features/home/presentation/pages/tabs/cart_screen.dart
+
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatefulWidget {

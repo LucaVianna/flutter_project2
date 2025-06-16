@@ -1,3 +1,5 @@
+// Caminho lib/core/utils/funcs.dart
+
 // Função que adiciona item ao carrinho
 void addToCart(List<Map<String, dynamic>> cartItems, Map<String, dynamic> product, int quantity, Function setStateCallBack) {
   setStateCallBack(() {

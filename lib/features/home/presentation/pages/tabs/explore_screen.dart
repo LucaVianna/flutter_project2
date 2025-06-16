@@ -1,3 +1,5 @@
+// Caminho lib/features/home/presentation/pages/tabs/explore_screen.dart
+
 import 'package:flutter/material.dart';
 
 class ExploreScreen extends StatelessWidget {

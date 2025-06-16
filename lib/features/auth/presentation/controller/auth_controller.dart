@@ -1,3 +1,5 @@
+// Caminho lib/features/auth/presentation/controller/auth_controller.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';

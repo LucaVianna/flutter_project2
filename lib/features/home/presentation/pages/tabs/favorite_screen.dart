@@ -1,3 +1,5 @@
+// Caminho lib/features/home/presentation/pages/tabs/favorite_screen.dart
+
 import 'package:flutter/material.dart';
 
 class FavoriteScreen extends StatelessWidget {

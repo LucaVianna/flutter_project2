@@ -1,3 +1,5 @@
+// Caminho lib/features/auth/presentation/pages/signup_screen.dart
+
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
