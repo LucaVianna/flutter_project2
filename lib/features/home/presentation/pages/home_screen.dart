@@ -6,7 +6,6 @@ import 'tabs/favorite_screen.dart';
 import 'tabs/explore_screen.dart';
 import 'tabs/cart_screen.dart';
 import 'tabs/profile_screen.dart';
-import '../../../../core/utils/funcs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,30 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
   // Index para navegação na Bottom Navigation Bar
   int _selectedIndex = 0;
 
-  // Inicia carrinho vazio
-  List<Map<String, dynamic>> cartItems = [];
-
-  // Inicia a lista de telas da Bottom Navigation Bar vazia
-  late final List<Widget> _screens = [];
-
-  @override
-  // Preenche a lista de telas da Bottom Navigation Bar
-  void initState() {
-    super.initState();
-    _screens.addAll([
-      // Recursos utilizados (como funções e listas) são fornecidos em cada tela adicionada
-      ShopScreen(addToCart: (product, quantity) => addToCart(cartItems, product, quantity, setState)),
-      ExploreScreen(),
-      CartScreen(
-        cartItems: cartItems,
-        increaseQuantity: (productName) => increaseQuantity(cartItems, productName, setState),
-        decreaseQuantity: (productName) => decreaseQuantity(cartItems, productName, setState),
-        removeFromCart: (productName) => removeFromCart(cartItems, productName, setState),
-      ),
-      FavoriteScreen(),
-      ProfileScreen(),
-    ]);
-  }
+  // A lista de telas agora é simples e não passa nenhuma função
+  static const List<Widget> _screens = [
+    ShopScreen(),
+    ExploreScreen(),
+    CartScreen(),
+    FavoriteScreen(),
+    ProfileScreen(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {

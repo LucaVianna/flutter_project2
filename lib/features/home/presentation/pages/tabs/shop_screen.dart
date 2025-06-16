@@ -1,36 +1,36 @@
 // Caminho lib/features/home/presentation/pages/tabs/shop_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../domain/entities/product_model.dart';
+import '../../providers/cart_provider.dart';
 import 'product_screen.dart';
 
-class ShopScreen extends StatefulWidget {
-  final Function(Map<String, dynamic>, int) addToCart;
+class ShopScreen extends StatelessWidget {
+  const ShopScreen({super.key});
 
-  ShopScreen({required this.addToCart});
-
-  @override
-  _ShopScreenState createState() => _ShopScreenState();
-}
-
-class _ShopScreenState extends State<ShopScreen> {
-  // Define uma lista de produtos
-  final List<Map<String, dynamic>> products = [
-    {'name': 'Maçã', 'price': 7.99, 'descricao': '1kg', 'image': 'assets/apple.png'},
-    {'name': 'Coca-Cola', 'price': 11.99, 'descricao': '355ml', 'image': 'assets/coke.png'},
-    {'name': 'Coca-Cola Diet', 'price': 11.99, 'descricao': '355ml', 'image': 'assets/cokeDiet.png'},
-    {'name': 'Ovo', 'price': 10.99, 'descricao': '1.5kg', 'image': 'assets/egg.png'},
-    {'name': 'Pasta', 'price': 6.99, 'descricao': '0.5kg', 'image': 'assets/pasta.png'},
-    {'name': 'Pepsi', 'price': 11.99, 'descricao': '355ml', 'image': 'assets/pepsi.png'},
-    {'name': 'Sprite', 'price': 11.99, 'descricao': '355ml', 'image': 'assets/sprite.png'},
+  // Lista de produtos agora usando o ProductModel
+  // No futuro: viria de um controller ou serviço
+  
+  static final List<ProductModel> products = [
+    ProductModel(id: 'p1', name: 'Maçã', description: 'Fruta fresca e suculenta', nutrition: 'Rica em fibras e vitamina C', weight: '1kg', price: 7.99, active: true, imagePath: 'assets/apple.png'),
+    ProductModel(id: 'p2', name: 'Coca-Cola', description: 'Refrigerante carbonado', nutrition: 'Açúcares e cafeína', weight: '355ml', price: 11.99, active: true, imagePath: 'assets/coke.png'),
+    ProductModel(id: 'p3', name: 'Ovo', description: 'Fonte de proteína', nutrition: 'Rico em albumina', weight: '12 unidades', price: 10.99, active: true, imagePath: 'assets/egg.png'),
+    ProductModel(id: 'p4', name: 'Massa', description: 'Macarrão italiano', nutrition: 'Carboidratos', weight: '500g', price: 6.99, active: true, imagePath: 'assets/pasta.png'),
+    ProductModel(id: 'p5', name: 'Pepsi', description: 'Refrigerante concorrente', nutrition: 'Açúcares e cafeína', weight: '355ml', price: 11.99, active: true, imagePath: 'assets/pepsi.png'),
+    ProductModel(id: 'p6', name: 'Sprite', description: 'Refrigerante de limão', nutrition: 'Açúcares', weight: '355ml', price: 11.99, active: true, imagePath: 'assets/sprite.png'),
   ];
 
   @override
   Widget build(BuildContext context) {
+    // Acessa o CartProvider que está na árvore de widgets
+    final cartProvider = context.read<CartProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            'Shopping',
+            'Loja',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -56,10 +56,9 @@ class _ShopScreenState extends State<ShopScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProductScreen(
-                      product: product,
-                      addToCart: widget.addToCart,
-                    ))
+                    // Navega para a ProductScreen passando o ProductModel
+                    builder: (context) => ProductScreen(product: product),
+                  ),
                 );
               },
               child: Card(
@@ -76,36 +75,32 @@ class _ShopScreenState extends State<ShopScreen> {
                       Expanded(
                         child: Center(
                           child: Image.asset(
-                            product['image'],
-                            width: 100,
-                            height: 100,
+                            product.imagePath,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),                      
                       SizedBox(height: 8),
-
                       Text(
-                        product['name'],
+                        product.name,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        product['descricao'],
+                        product.weight,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                         ),
                       ),
                       SizedBox(height: 8),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'R\$${product['price'].toStringAsFixed(2)}',
+                            'R\$${product.price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -116,23 +111,21 @@ class _ShopScreenState extends State<ShopScreen> {
                             height: 40,
                             child: ElevatedButton(
                               onPressed: () {
-                                widget.addToCart({...product}, 1);
+                                // AÇÃO PRINCIPAL: Usa o provider para adicionar ao carrinho
+                                cartProvider.addToCart(product);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('${product['name']} adicionado(a) ao carrinho!'))
+                                  SnackBar(content: Text(
+                                    '${product.name} adicionado(a) ao carrinho!'
+                                  )),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.add,
-                                size: 20,
-                              ),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                              ), 
+                              child: Icon(Icons.add, size: 20),
                             ),
-                          ), 
+                          ),
                         ],
                       ),
                     ],
@@ -140,7 +133,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
             );
-          }
+          },
         ),
       ),
     );

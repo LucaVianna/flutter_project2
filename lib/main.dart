@@ -10,7 +10,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 // IMPORTAÇÕES DO PROVIDER e CONTROLLER
 import 'package:provider/provider.dart'; // PROVIDER
-import 'features/auth/presentation/controller/auth_controller.dart'; // CONTROLLER
+import 'features/auth/presentation/controller/auth_controller.dart';
+import 'features/home/presentation/providers/cart_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +21,14 @@ void main() async {
   );
 
   runApp(
-    // ENVOLVE TODA A ÁRVORE DE WIDGETS COM UM CHANGENOTIFIERPROVIDER PARA DISPONIBILIZAR O AUTHCONTROLLER GLOBALMENTE
-    ChangeNotifierProvider(
-      create: (context) => AuthController(),
+    MultiProvider(
+      providers: [
+        // Provider para o estado de autenticação
+        ChangeNotifierProvider(create: (context) => AuthController()),
+
+        // Provider para o estado do carrinho de compras
+        ChangeNotifierProvider(create: (context) => CartProvider()),
+      ],
       child: const MyApp(),
     ),
   );

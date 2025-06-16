@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/models/user_model.dart';
 
-class AuthController extends ChangeNotifier{
+class AuthController with ChangeNotifier{
   final AuthService _authService = AuthService();
 
   bool _isLoading = false;

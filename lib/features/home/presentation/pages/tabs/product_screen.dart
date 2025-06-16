@@ -1,12 +1,14 @@
 // Caminho lib/features/home/presentation/pages/tabs/product_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../domain/entities/product_model.dart';
+import '../../providers/cart_provider.dart';
 
 class ProductScreen extends StatefulWidget {
-  final Map<String, dynamic> product;
-  final Function(Map<String, dynamic>, int) addToCart;
-
-  ProductScreen({required this.product, required this.addToCart});
+  final ProductModel product;
+  
+  const ProductScreen({super.key, required this.product});
 
   @override
   _ProductScreenState createState() => _ProductScreenState();
@@ -17,6 +19,9 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Acessa o provider aqui também
+    final cartProvider = context.read<CartProvider>();
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -29,14 +34,13 @@ class _ProductScreenState extends State<ProductScreen> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Image.asset(
-                    widget.product['image'],
+                    widget.product.imagePath,
                     height: 250,
                     fit: BoxFit.contain,
                   ),
                 ), 
               ),
               SizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -44,14 +48,14 @@ class _ProductScreenState extends State<ProductScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.product['name'],
+                        widget.product.name,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        widget.product['descricao'],
+                        widget.product.description,
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.grey
@@ -63,7 +67,6 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               SizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -72,11 +75,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       IconButton(
                         icon: Icon(Icons.remove),
                         onPressed: () {
-                          if (quantity > 1) {
-                            setState(() {
-                              quantity--;
-                            });                         
-                          }
+                          if (quantity > 1) setState(() => quantity--);                       
                         },
                       ),
                       Text(
@@ -90,16 +89,12 @@ class _ProductScreenState extends State<ProductScreen> {
                           Icons.add,
                           color: Colors.green,
                         ),
-                        onPressed: () {
-                          setState(() {
-                              quantity++;
-                          });
-                        },
+                        onPressed: () => setState(() => quantity++),
                       ),
                     ],
                   ),
                   Text(
-                    'R\$${widget.product['price'].toStringAsFixed(2)}',
+                    'R\$${widget.product.price.toStringAsFixed(2)}',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -108,7 +103,6 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               SizedBox(height: 20),
-              
               ExpansionTile(
                 title: Text(
                   'Detalhes do produto',
@@ -121,7 +115,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   Padding(
                     padding: EdgeInsets.all(8),
                     child: Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus fermentum nunc et ex sagittis cursus.',
+                      widget.product.description,
                       style: TextStyle(
                         fontSize: 16
                       ),
@@ -141,7 +135,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   Padding(
                     padding: EdgeInsets.all(8),
                     child: Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus fermentum nunc et ex sagittis cursus.',
+                      widget.product.nutrition,
                       style: TextStyle(
                         fontSize: 16
                       ),
@@ -167,12 +161,17 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               SizedBox(height: 20),   
-           
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    widget.addToCart(widget.product, quantity);
+                    // AÇÃO PRINCIPAL: Usa o provider para adicionar a quantidade certa
+                    cartProvider.addToCart(widget.product, quantity: quantity);
                     Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(
+                        '${widget.product.name} adicionado(a) ao carrinho!',
+                      )),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     // Cor definida no ThemeData
