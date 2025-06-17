@@ -1,13 +1,19 @@
 // Caminho lib/features/home/presentation/pages/tabs/cart_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:nectar_online_groceries/features/home/presentation/providers/order_provider.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 
-class CartScreen extends StatelessWidget {
-  // O construtor agora é simples e constante. Não recebe mais nada...
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  
   @override
   Widget build(BuildContext context) {
     // 'watch' observa o CartProvider. Qualquer alteração nele, reconstrói esta tela.
@@ -156,12 +162,48 @@ class CartScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Ação para finalizar a compra
-                      }, 
-                      child: const Text(
-                        'Finalizar Compra'
-                      ),
+                      // Desabilita o botão se o OrderProvider estiver carregando
+                      onPressed: (context.watch<OrderProvider>().isLoading)
+                        ? null
+                        : () async {
+                          // Pega as instâncias dos providers necessários
+                          final cartProvider = context.read<CartProvider>();
+                          final orderProvider = context.read<OrderProvider>();
+
+                          //Chama o método para criar o pedido, passando os dados do carrinho
+                          final success = await orderProvider.createOrder(
+                            items: cartProvider.items, 
+                            totalPrice: cartProvider.totalPrice,
+                          );
+
+                          // Se o widget ainda estiver montado na árvore
+                          if (mounted) {
+                            if (success) {
+                              // 1. Limpa o carrinho
+                              cartProvider.cleanCart();
+                              // 2. Mostra uma mensagem de sucesso
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Pedido realizado com sucesso!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } else {
+                              // Mostra uma mensagem de erro se algo falhar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    orderProvider.error ?? 'Erro desconhecido.'
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        }, 
+                      child: (context.watch<OrderProvider>().isLoading)
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Finalizar Compra'),
                     ),
                   )
                 ],

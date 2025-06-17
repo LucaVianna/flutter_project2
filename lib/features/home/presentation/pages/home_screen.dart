@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showUnselectedLabels: false,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Loja'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explorar'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Pedidos'),
           BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Carrinho'),
           BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoritos'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
