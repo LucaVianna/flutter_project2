@@ -26,13 +26,13 @@ class _ProductScreenState extends State<ProductScreen> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Image.asset(
                     widget.product.imagePath,
                     height: 250,
@@ -40,7 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                 ), 
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -49,43 +49,43 @@ class _ProductScreenState extends State<ProductScreen> {
                     children: [
                       Text(
                         widget.product.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         widget.product.weight,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.grey
                         ),
                       ),                      
                     ],
                   ),
-                  Icon(Icons.favorite_border, size: 28)
+                  const Icon(Icons.favorite_border, size: 28)
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.remove),
+                        icon: const Icon(Icons.remove),
                         onPressed: () {
                           if (quantity > 1) setState(() => quantity--);                       
                         },
                       ),
                       Text(
                         '$quantity',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                         ),
                       ),
                       IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.add,
                           color: Colors.green,
                         ),
@@ -95,16 +95,16 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                   Text(
                     'R\$${widget.product.price.toStringAsFixed(2)}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ExpansionTile(
-                title: Text(
+                title: const Text(
                   'Detalhes do produto',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -113,10 +113,10 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       widget.product.description,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16
                       ),
                     ),
@@ -124,7 +124,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               ExpansionTile(
-                title: Text(
+                title: const Text(
                   'Nutrições',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -133,10 +133,10 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       widget.product.nutrition,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16
                       ),
                     ),
@@ -144,7 +144,7 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               ExpansionTile(
-                title: Text(
+                title: const Text(
                   'Avaliações',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -153,14 +153,14 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
                 children: [
                   Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Row(
-                      children: List.generate(5, (index) => Icon(Icons.star, color: Colors.amber, size: 24)),
+                      children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 24)),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),   
+              const SizedBox(height: 20),   
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -175,12 +175,12 @@ class _ProductScreenState extends State<ProductScreen> {
                   },
                   style: ElevatedButton.styleFrom(
                     // Cor definida no ThemeData
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Adicionar ao Carrinho',
                     style: TextStyle(
                       fontSize: 18,

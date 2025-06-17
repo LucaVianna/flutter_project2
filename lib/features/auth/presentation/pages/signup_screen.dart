@@ -87,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           bool isLandScape = constraints.maxWidth > 600;
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Center(
               child: SingleChildScrollView(
                 child: Form(
@@ -103,20 +103,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           'assets/carrot-preta-transparente.png',
                         ),
                       ),
-                      SizedBox(height: 5),              
+                      const SizedBox(height: 5),              
 
                       // Título
-                      Text(
+                      const Text(
                         'Cadastre-se',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
 
                       // Subtítulo
-                      Text(
+                      const Text(
                         'Identifique-se para continuar',
                         style: TextStyle(
                           fontSize: 20,
@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
 
                       isLandScape
                       ? Row(
@@ -132,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Expanded(
                               child: TextFormField(
                                 controller: _usernameController,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   labelText: 'Usuário',
                                 ),
                                 validator: (value) {
@@ -143,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 },
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
 
                             Expanded(
                               child: TextFormField(
@@ -152,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 decoration: InputDecoration(
                                   labelText: 'Email',
                                   suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
-                                    ? Icon(Icons.check_circle, color: Colors.green)
+                                    ? const Icon(Icons.check_circle, color: Colors.green)
                                     : null
                                 ),
                                 onChanged: (value) {
@@ -175,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           // Campo de nome do usário
                           TextFormField(
                             controller: _usernameController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Usuário',
                             ),
                             validator: (value) {
@@ -185,7 +185,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               return null;
                             } 
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
 
                           // Campo de email do usuário
                           TextFormField(
@@ -193,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
-                                ? Icon(Icons.check_circle, color: Colors.green)
+                                ? const Icon(Icons.check_circle, color: Colors.green)
                                 : null
                             ),                            
                             onChanged: (value) {
@@ -210,7 +210,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       
                       // Campo de senha do usuário
                       TextFormField(
@@ -236,7 +236,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
 
                       // Checkbox para aceitar termos
                       Row(
@@ -249,7 +249,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               });
                             },
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Text(
                               'Concordar com os Termos e Condições',
                               overflow: TextOverflow.ellipsis,
@@ -258,15 +258,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
 
                       // MENSAGEM DE ERRO (VISÍVEL SE HOUVER ERRO NO AUTHCONTROLLER)
                       if (errorMessage != null)
                         Padding(
-                          padding: EdgeInsets.only(bottom: 15),
+                          padding: const EdgeInsets.only(bottom: 15),
                           child: Text(
                             errorMessage,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.red,
                               fontSize: 14,
                             ),
@@ -282,11 +282,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ? null
                             : () => _submitSignUpForm(context),
                           child: isLoading
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text('Cadastrar-se'),
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text('Cadastrar-se'),
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
 
                       // Link para login
                       GestureDetector(

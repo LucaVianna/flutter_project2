@@ -10,7 +10,7 @@ import 'core/services/navigation_service.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-// IMPORTAÇÕES DO PROVIDER e CONTROLLER
+// IMPORTAÇÕES DO PROVIDER
 import 'package:provider/provider.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/home/presentation/providers/cart_provider.dart';

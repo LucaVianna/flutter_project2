@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -83,20 +83,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       'assets/carrot-preta-transparente.png',
                     ),
                   ),
-                  SizedBox(height: 5),              
+                  const SizedBox(height: 5),              
 
                   // Título
-                  Text(
+                  const Text(
                     'Log in',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
 
                   // Subtítulo
-                  Text(
+                  const Text(
                     'Coloque seus dados para continuar',
                     style: TextStyle(
                       fontSize: 20,
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   Column(
                     children: [
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         decoration: InputDecoration(
                           labelText: 'Email',
                           suffixIcon: _emailController.text.contains('@') && _emailController.text.isNotEmpty
-                            ? Icon(Icons.check_circle, color: Colors.green)
+                            ? const Icon(Icons.check_circle, color: Colors.green)
                             : null
                         ),                            
                         onChanged: (value) {
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   
                   // Campo de senha do usuário
                   TextFormField(
@@ -158,16 +158,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
                   if (errorMessage != null)
                     Padding(
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                         bottom: 15
                       ),
                       child: Text(
                         errorMessage,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.red,
                           fontSize: 14
                         ),
@@ -183,11 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? null
                         : () => _submitLoginForm(context),
                       child: isLoading
-                        ? CircularProgressIndicator(color: Colors.white)
-                        : Text('Entrar')
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Entrar')
                     ),
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
                   // Link para login
                   GestureDetector(

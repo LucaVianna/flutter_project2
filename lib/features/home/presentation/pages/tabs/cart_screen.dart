@@ -16,7 +16,7 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Meu Carrinho',
             style: TextStyle(
@@ -27,7 +27,7 @@ class CartScreen extends StatelessWidget {
       ),
       body: cartItems.isEmpty
         // Se o carrinho estiver vazio, mostra uma mensagem
-        ? Center(
+        ? const Center(
           child: Text(
             'Seu carrinho está vazio!',
             style: TextStyle(
@@ -44,7 +44,7 @@ class CartScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = cartItems[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: ListTile(
                     leading: Image.asset(
                       item.product.imagePath,
@@ -56,14 +56,14 @@ class CartScreen extends StatelessWidget {
                       children: [
                         Text(
                           item.product.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold
                           ),
                         ),
                         Text(
                           item.product.weight,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                           ),
@@ -73,7 +73,7 @@ class CartScreen extends StatelessWidget {
                     subtitle: Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.remove),
+                          icon: const Icon(Icons.remove),
                           onPressed: () {
                             // Usa o provider para diminuir a quantidade
                             context.read<CartProvider>().decreaseItemQuantity(item.product.id);
@@ -81,12 +81,12 @@ class CartScreen extends StatelessWidget {
                         ),
                         Text(
                           '${item.quantity}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                           ),
                         ),
                         IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.add,
                             color: Colors.green,
                           ),
@@ -105,16 +105,16 @@ class CartScreen extends StatelessWidget {
                             // Usa o provider para remover o item
                             context.read<CartProvider>().removeFromCart(item.product.id);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.close,
                             size: 18,
                             color: Colors.red,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           'R\$${item.subtotal.toStringAsFixed(2)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -127,15 +127,15 @@ class CartScreen extends StatelessWidget {
           ),
           // --- CARD DE RESUMO DO PEDIDO ---
           Card(
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Total',
                         style: TextStyle(
                           fontSize: 20,
@@ -144,7 +144,7 @@ class CartScreen extends StatelessWidget {
                       ),
                       Text(
                         'R\$${cartProvider.totalPrice.toStringAsFixed(2)}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.green,
@@ -152,14 +152,14 @@ class CartScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
                         // Ação para finalizar a compra
                       }, 
-                      child: Text(
+                      child: const Text(
                         'Finalizar Compra'
                       ),
                     ),

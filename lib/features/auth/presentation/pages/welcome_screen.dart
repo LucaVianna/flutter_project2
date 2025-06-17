@@ -36,10 +36,10 @@ class WelcomeScreen extends StatelessWidget {
                     'assets/carrot-branca-transparente.png',
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // Título de boas-vindas
-                Text(
+                const Text(
                   'Bem-vindo à nossa loja',
                   style: TextStyle(
                     fontSize: 32,
@@ -48,10 +48,10 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 // Subtítulo de boas-vindas
-                Text(
+                const Text(
                   'Receba suas compras em casa!',
                   style: TextStyle(
                     fontSize: 20,
@@ -60,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
 
                 // Botão de ação
                 SizedBox(
@@ -70,17 +70,17 @@ class WelcomeScreen extends StatelessWidget {
                       // Navegação para a próxima tela
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen()),
+                        MaterialPageRoute(builder: (context) => const SignUpScreen()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       // Cor definida no ThemeData
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Começar',
                       style: TextStyle(
                         fontSize: 20,

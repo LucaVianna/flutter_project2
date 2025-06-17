@@ -9,7 +9,7 @@ class ExploreScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Explorar',
             style: TextStyle(
@@ -18,7 +18,7 @@ class ExploreScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Página em construção',
           style: TextStyle(

@@ -28,7 +28,7 @@ class ShopScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Loja',
             style: TextStyle(
@@ -38,9 +38,9 @@ class ShopScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
@@ -67,7 +67,7 @@ class ShopScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,28 +80,28 @@ class ShopScreen extends StatelessWidget {
                           ),
                         ),
                       ),                      
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         product.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         product.weight,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'R\$${product.price.toStringAsFixed(2)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -123,7 +123,7 @@ class ShopScreen extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                               ), 
-                              child: Icon(Icons.add, size: 20),
+                              child: const Icon(Icons.add, size: 20),
                             ),
                           ),
                         ],

@@ -27,8 +27,8 @@ class AuthProvider with ChangeNotifier{
   String? get errorMessage => _errorMessage;
   UserModel? get currentUser => _currentUser;
 
-  // CONSTRUTOR DO CONTROLADOR
-  AuthController() {
+  // CONSTRUTOR DO PROVIDER
+  AuthProvider() {
     // Inicia a escuta contínua do estado de autenticação
     _authStateSubscription = _authService.authStateChanges.listen(_onAuthStateChanged);
   }
