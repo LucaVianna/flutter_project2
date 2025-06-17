@@ -37,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
             // --- INFORMAÇÕES DO USUÁRIO ---
             CircleAvatar(
               radius: 50,
-              backgroundColor: Theme.of(context).primaryColor.withValues(), // AINDA PREENCHER
+              backgroundColor: Colors.grey.shade200,
               child: Text(
                 currentUser.name.isNotEmpty ? currentUser.name[0].toUpperCase() : 'U',
                 style: TextStyle(

@@ -97,9 +97,8 @@ class AuthWrapper extends StatelessWidget {
     // Ouve mudanças no AuthController, quando _currentUser ou _isLoading mudam, este widget reconstrói
     final authController = context.watch<AuthController>();
 
-    // Se o controller está em processo de verificação ou carregamento, mostra loader
-    // isLoading do AuthController é usada para isso
-    if (authController.isLoading) {
+    // Usa a nova variável para a tela de carregamento inicial
+    if (authController.isInitializing) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );

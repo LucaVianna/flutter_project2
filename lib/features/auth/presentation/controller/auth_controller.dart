@@ -1,5 +1,6 @@
 // Caminho lib/features/auth/presentation/controller/auth_controller.dart
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/services/auth_service.dart';
@@ -7,39 +8,48 @@ import '../../../../core/models/user_model.dart';
 
 class AuthController with ChangeNotifier{
   final AuthService _authService = AuthService();
+  StreamSubscription? _authStateSubscription; // Guarda nossa 'escuta'
 
-  bool _isLoading = false;
+  bool _isLoading = false; // Para ações dos botões (Login/SignUp)
+  bool _isInitializing = true; // Apenas para o loader inicial do app
   String? _errorMessage;
   UserModel? _currentUser;
 
   // GETTERS PARA ACESSAR O ESTADO A PARTIR DA UI
   bool get isLoading => _isLoading;
+  bool get isInitializing => _isInitializing;
   String? get errorMessage => _errorMessage;
   UserModel? get currentUser => _currentUser;
 
   // CONSTRUTOR DO CONTROLADOR
   AuthController() {
-    _init();
+    // Inicia a escuta contínua do estado de autenticação
+    _authStateSubscription = _authService.authStateChanges.listen(_onAuthStateChanged);
   }
 
-  void _init() async {
-    // 1. Informa a UI que estamos em processo de verificação inicial
-    _isLoading = true;
-    notifyListeners();
-
-    // 2. Escuta a primeira resposta do stream de autenticação
-    User? firebaseUser = await _authService.authStateChanges.first;
-
-    if (firebaseUser != null) {
-      // 3. Se há um usuário logado, busca seu perfil
-      _currentUser = await _authService.getUserProfile(firebaseUser.uid);
-    } else {
+  // Listener agora tem uma funcionalidade mais simples
+  Future<void> _onAuthStateChanged(User? firebaseUser) async {
+    if (firebaseUser == null) {
       _currentUser = null;
+    } else {
+      if (_currentUser?.uid != firebaseUser.uid) {
+        _currentUser = await _authService.getUserProfile(firebaseUser.uid);
+      }
     }
 
-    // 4. Informa a UI que o processo de verificação inicial terminou
-    _isLoading = false;
+    // Desliga o loading INICIAL apenas uma vez
+    if (_isInitializing) {
+      _isInitializing = false;
+    }
+
     notifyListeners();
+  }    
+
+  // Sobrescreve o método dispose para cancelar a escuta e evitar memory leaks
+  @override
+  void dispose() {
+    _authStateSubscription?.cancel();
+    super.dispose();
   }
 
   // MÉTODO PARA LIDAR COM O CADASTRO DE USUÁRIO (SIGNUP-SCREEN)
@@ -92,7 +102,7 @@ class AuthController with ChangeNotifier{
       );
     } on FirebaseAuthException catch(e) {
       String message = 'Ocorreu um erro de autenticação';
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
         message = 'Credenciais inválidas. Verifique seu e-mail e senha';
       } else if (e.code == 'invalid-email') {
         message = 'O formato do e-mail é inválido';

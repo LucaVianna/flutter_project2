@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
 
+// PROVIDER
 import '../controller/auth_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Limpa a mensagem de erro ao construir a tela
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthController>().clearErrorMessage();
+    });
+  }
+
   final _formKey = GlobalKey<FormState>(); // Para validar Form
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
