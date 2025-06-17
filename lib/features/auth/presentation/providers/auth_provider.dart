@@ -127,11 +127,11 @@ class AuthProvider with ChangeNotifier{
         );
       }
     } on FirebaseAuthException catch(e) {
-      String message = 'Ocorreu um erro de autenticação';
+      String message = 'Ocorreu um erro de autenticação.';
       if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
-        message = 'Credenciais inválidas. Verifique seu e-mail e senha';
+        message = 'Credenciais inválidas. Verifique seu e-mail e senha.';
       } else if (e.code == 'invalid-email') {
-        message = 'O formato do e-mail é inválido';
+        message = 'O formato do e-mail é inválido.';
       }
       _errorMessage = message;
     } catch (e) {
