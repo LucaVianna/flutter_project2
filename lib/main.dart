@@ -14,6 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/home/presentation/providers/cart_provider.dart';
+import 'features/home/presentation/providers/order_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,18 @@ void main() async {
 
         // Provider para o estado do carrinho de compras
         ChangeNotifierProvider(create: (context) => CartProvider()),
+
+        // Provider dependente: OrderProvider depende de AuthProvider
+        ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
+          // Instância inicial
+          create: (context) => OrderProvider(context.read<AuthProvider>()),
+          // Sempre que o AuthProvider chama o notifyListeners() 
+          update: (context, authProvider, previousOrderProvider) {
+            // Criamos uma instância de OrderProvider com AuthProvider atualizado
+            // Nosso construtor já chama fetchOrders() se houver um usuário
+            return OrderProvider(authProvider);
+          }
+        )
       ],
       child: const MyApp(),
     ),
