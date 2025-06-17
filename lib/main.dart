@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'features/auth/presentation/pages/welcome_screen.dart';
-import 'features/home/presentation/pages/home_screen.dart';
+
+// GLOBAL KEY PARA NAVEGAÇÃO
+import 'core/services/navigation_service.dart';
 
 // IMPORTAÇÕES DO FIREBASE
 import 'firebase_options.dart';
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Nectar Online Groceries',
+      navigatorKey: NavigationService.navigatorKey,
       theme: ThemeData(
         // elevatedButtonTheme: ElevatedButtonThemeData(
         //   style: ElevatedButton.styleFrom(
@@ -84,32 +87,9 @@ class MyApp extends StatelessWidget {
           ),
         ).copyWith(secondary: const Color(0xFFFFC107))
       ),
-      home: const AuthWrapper(),
+      // 2. Removemos o AuthWrapper. A tela inicial será sempre a WelcomeScreen
+      // A lógica de navegação será feita pelo AuthController agora
+      home: const WelcomeScreen(),
     );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Ouve mudanças no AuthController, quando _currentUser ou _isLoading mudam, este widget reconstrói
-    final authController = context.watch<AuthController>();
-
-    // Usa a nova variável para a tela de carregamento inicial
-    if (authController.isInitializing) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    // Se há um usuário logado -> HomeScreen
-    if (authController.currentUser != null) {
-      return const HomeScreen();
-    } else {
-    // Se não houver usuário logado -> WelcomeScreen
-      return const WelcomeScreen();
-    }
   }
 }

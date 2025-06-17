@@ -3,15 +3,21 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../../core/services/auth_service.dart';
 import '../../../../core/models/user_model.dart';
+import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/navigation_service.dart';
+import '../../../home/presentation/pages/home_screen.dart';
+import '../pages/welcome_screen.dart';
 
+// Gerencia todo o estado e lógica de autenticação do app
+// Funciona como o cérebro para login, cadastro, logout e para usuário atualmente logado
 class AuthController with ChangeNotifier{
   final AuthService _authService = AuthService();
   StreamSubscription? _authStateSubscription; // Guarda nossa 'escuta'
 
+  // ESTADOS INTERNOS
   bool _isLoading = false; // Para ações dos botões (Login/SignUp)
-  bool _isInitializing = true; // Apenas para o loader inicial do app
+  bool _isInitializing = true; // APENAS para inicialização do app
   String? _errorMessage;
   UserModel? _currentUser;
 
@@ -27,22 +33,23 @@ class AuthController with ChangeNotifier{
     _authStateSubscription = _authService.authStateChanges.listen(_onAuthStateChanged);
   }
 
-  // Listener agora tem uma funcionalidade mais simples
-  Future<void> _onAuthStateChanged(User? firebaseUser) async {
+  // Listener: responsável pela inicialização e sempre que o estado muda (login, logout, etc)
+  Future<void> _onAuthStateChanged(User? firebaseUser) async {    
     if (firebaseUser == null) {
       _currentUser = null;
     } else {
-      if (_currentUser?.uid != firebaseUser.uid) {
+      // Se o usuário logado no Firebase for o mesmo que já temos, não faz nada
+      if (firebaseUser.uid != _currentUser?.uid) {
         _currentUser = await _authService.getUserProfile(firebaseUser.uid);
       }
     }
 
-    // Desliga o loading INICIAL apenas uma vez
+    // Se esta foi a primeira verificação desde que o app abriu, o processo de inicialização terminou
     if (_isInitializing) {
       _isInitializing = false;
     }
 
-    notifyListeners();
+    notifyListeners(); // Notifica todos os widgets ouvintes ('watch' ou 'Consumer')
   }    
 
   // Sobrescreve o método dispose para cancelar a escuta e evitar memory leaks
@@ -52,7 +59,9 @@ class AuthController with ChangeNotifier{
     super.dispose();
   }
 
-  // MÉTODO PARA LIDAR COM O CADASTRO DE USUÁRIO (SIGNUP-SCREEN)
+  // --- MÉTODOS DE AÇÃO COM LÓGICA REVISADA ---
+
+  /// --- MÉTODO signUp COM CONTROLE TOTAL DO FLUXO ---
   Future<void> signUp({
     required String email,
     required String password,
@@ -63,13 +72,20 @@ class AuthController with ChangeNotifier{
     notifyListeners();
 
     try {
-      // CHAMA O MÉTODO DE CADASTRO DO AUTHSERVICE
-      await _authService.signUpWithEmailAndPassword(
+      // 1. O serviço de autenticação agora retorna o UserModel
+      final user = await _authService.signUpWithEmailAndPassword(
         email: email, 
         password: password, 
         name: name,
       );
-      // SE SIGNUP BEM-SUCEDIDO -> LISTENER AUTHSTATECHANGES NO CONSTRUTOR ATUALIZA O _CURRENTUSER
+      _currentUser = user;
+      // 2. SUCESSO: comanda a navegação para a HomeScreen!
+      if (user != null) {
+        NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String message = 'Ocorreu um erro de autenticação.';
       if (e.code == 'email-already-in-use') {
@@ -86,7 +102,7 @@ class AuthController with ChangeNotifier{
     }
   }
 
-  // MÉTODO PARA LIDAR COM O LOGIN DE USUÁRIO (LOGIN-SCREEN)
+  // --- MÉTODO signIn COM CONTROLE TOTAL DO FLUXO ---
   Future<void> signIn({
     required String email,
     required String password,
@@ -96,10 +112,20 @@ class AuthController with ChangeNotifier{
     notifyListeners();
 
     try {
-      await _authService.signInWithEmailAndPassword(
+      // 1. O serviço de autenticação agora retorna o UserModel
+      final user = await _authService.signInWithEmailAndPassword(
         email: email, 
         password: password,
       );
+      _currentUser = user;
+
+      // 2. SUCESSO: comanda a navegação para a HomeScreen!
+      if (user != null) {
+        NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
+        );
+      }
     } on FirebaseAuthException catch(e) {
       String message = 'Ocorreu um erro de autenticação';
       if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
@@ -116,13 +142,18 @@ class AuthController with ChangeNotifier{
     }
   }
 
-  // MÉTODO PARA LIDAR COM O LOGOUT DO USUÁRIO (PROFILE-SCREEN)
+  // --- MÉTODO signOut COM CONTROLE TOTAL DO FLUXO ---
   Future<void> signOut() async {
     _isLoading = true;
     notifyListeners();
 
     try {
       await _authService.signOut();
+      // Após o logout, comanda a navegação de volta para a Welcome Screen
+      NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        (route) => false,
+      );
     } catch (e) {
       print('Erro ao fazer logout: $e');
     } finally {
