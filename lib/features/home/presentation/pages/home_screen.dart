@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'tabs/shop_screen.dart';
 import 'tabs/favorite_screen.dart';
-import 'tabs/explore_screen.dart';
+import 'tabs/order_screen.dart';
 import 'tabs/cart_screen.dart';
 import 'tabs/profile_screen.dart';
 
@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // A lista de telas agora é simples e não passa nenhuma função
   static const List<Widget> _screens = [
     ShopScreen(),
-    ExploreScreen(),
+    OrderScreen(),
     CartScreen(),
     FavoriteScreen(),
     ProfileScreen(),
