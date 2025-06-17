@@ -12,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 // IMPORTAÇÕES DO PROVIDER e CONTROLLER
 import 'package:provider/provider.dart';
-import 'features/auth/presentation/controller/auth_controller.dart';
+import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/home/presentation/providers/cart_provider.dart';
 
 void main() async {
@@ -26,7 +26,7 @@ void main() async {
     MultiProvider(
       providers: [
         // Provider para o estado de autenticação
-        ChangeNotifierProvider(create: (context) => AuthController()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
 
         // Provider para o estado do carrinho de compras
         ChangeNotifierProvider(create: (context) => CartProvider()),

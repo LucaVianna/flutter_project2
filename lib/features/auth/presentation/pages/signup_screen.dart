@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
 // PROVIDER
-import '../controller/auth_controller.dart';
+import '../providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     // Limpa a mensagem de erro ao construir a tela
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthController>().clearErrorMessage();
+      context.read<AuthProvider>().clearErrorMessage();
     });
   }
 
@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // ACESSA O AUTHCONTROLLER VIA PROVIDER
     // 'READ' POIS CRIAMOS UM MÉTODO QUE DISPARA UMA AÇÃO
-    final authController = context.read<AuthController>();
+    final authController = context.read<AuthProvider>();
 
     authController.clearErrorMessage();
 
@@ -77,7 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authController = context.watch<AuthController>();
+    final authController = context.watch<AuthProvider>();
     final bool isLoading = authController.isLoading;
     final String? errorMessage = authController.errorMessage;
 

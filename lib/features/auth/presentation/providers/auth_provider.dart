@@ -11,7 +11,7 @@ import '../pages/welcome_screen.dart';
 
 // Gerencia todo o estado e lógica de autenticação do app
 // Funciona como o cérebro para login, cadastro, logout e para usuário atualmente logado
-class AuthController with ChangeNotifier{
+class AuthProvider with ChangeNotifier{
   final AuthService _authService = AuthService();
   StreamSubscription? _authStateSubscription; // Guarda nossa 'escuta'
 

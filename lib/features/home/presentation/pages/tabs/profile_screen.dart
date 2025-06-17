@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../auth/presentation/controller/auth_controller.dart';
+import '../../../../auth/presentation/providers/auth_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Usamos 'watch' para que, se um dia o perfil mudar, a tela se atualize
-    final authController = context.watch<AuthController>();
+    final authController = context.watch<AuthProvider>();
     final currentUser = authController.currentUser;
 
     return Scaffold(
@@ -115,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {
                 // Chama o método signOut do AuthController
                 // O AuthWrapper no main.dart vai detectar a mudança de estado e automaticamente redirecionar para a WelcomeScreen
-                context.read<AuthController>().signOut();
+                context.read<AuthProvider>().signOut();
               },
             ),
           ],
