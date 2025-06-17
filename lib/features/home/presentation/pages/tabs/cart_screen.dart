@@ -29,7 +29,7 @@ class CartScreen extends StatelessWidget {
         // Se o carrinho estiver vazio, mostra uma mensagem
         ? const Center(
           child: Text(
-            'Seu carrinho está vazio!',
+            'Seu carrinho está vazio.',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
