@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/order_service.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
@@ -8,6 +9,9 @@ class OrderProvider with ChangeNotifier {
   final OrderService _orderService = OrderService();
   AuthProvider _authProvider; // Dependência do AuthProvider
   CartProvider _cartProvider; // Dependência do CartProvider
+
+  // Guarda a "inscrição" no nosso stream para podermos cancelá-la depois
+  StreamSubscription? _ordersSubscription;
 
   // ESTADOS INTERNOS
   List<OrderModel> _orders = [];
@@ -22,10 +26,8 @@ class OrderProvider with ChangeNotifier {
   // Construtor recebe o AuthProvider
   // Injeção de Dependência
   OrderProvider(this._authProvider, this._cartProvider) {
-    // Se já houver um usuário logado quando o provider for criado, busca os pedidos
-    if (_authProvider.currentUser != null) {
-      fetchOrders();
-    }
+    // Assim que o provider é criado, começa a escutar os pedidos do usuário
+    listenToOrders();
   }
 
   // NOVO MÉTODO: Usado pelo ProxyProvider para atualizar as dependências, sem recriar o objeto inteiro
@@ -34,36 +36,36 @@ class OrderProvider with ChangeNotifier {
     _cartProvider = cartProvider;
   }
 
-  // Busca os pedidos do usuário logado no Firestore
-  // O parâmetro 'setLoading' nos permite chamá-lo silenciosamente de outros métodos
-  Future<void> fetchOrders({bool setLoading = true}) async {
-    // Pega o ID do usuário através do AuthProvider
-    final userId = _authProvider.currentUser?.uid;
-    if (userId == null) return;
+  void listenToOrders() {
+    _isLoading = true;
+    notifyListeners();
 
-    if (setLoading) {
-      _isLoading = true;
+    final userId = _authProvider.currentUser?.uid;
+    if (userId == null) {
+      _isLoading = false;
+      _orders = []; // Garante que a lista de pedidos seja limpa no logout
+      notifyListeners();
+      return;
+    }
+
+    // Cancela qualquer escuta anterior para evitar duplicatas
+    _ordersSubscription?.cancel();
+
+    // Se inscreve no stream do serviço
+    _ordersSubscription = _orderService.getOrdersStream(userId).listen((orders) {
+      _orders = orders;
+      _isLoading = false;
       _error = null;
       notifyListeners();
-    }
-
-    try {
-      _orders = await _orderService.fetchOrders(userId);
-    } catch (e) {
-      _error = 'Não foi possível carregar os pedidos.';
-      _orders = [];
-    } finally {
-      if (setLoading) {
-        _isLoading = false;
-        notifyListeners();
-      } else {
-        // Se não era para mostrar o loading, apenas notifica que os dados (a lista de pedidos) mudaram
-        notifyListeners();
-      }
-    }
+    }, onError: (e) {
+      _error = 'Não foi possível carregar os pedidos';
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
-  // Cria um novo pedido a partir dos itens do carrinho
+  // O createOrder fica mais simples: ele não precisa mais chamar o fetchOrders
+  // O stream vai atualizar a lista automaticamente!
   Future<bool> createOrder() async {
     final userId = _authProvider.currentUser?.uid;
     final cartItems = _cartProvider.items;
@@ -78,37 +80,36 @@ class OrderProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    // 1. Converte a lista de CartItemModel para uma lista de OrderItemModel
-    final orderItems = cartItems
-      .map((cartItems) => OrderItemModel(
-        productId: cartItems.product.id, 
-        productName: cartItems.product.name, 
-        quantity: cartItems.quantity, 
-        priceAtTimeOfOrder: cartItems.product.price
-      ))
-      .toList();
-
-    // 2. Cria um objeto OrderModel com os dados
-    final newOrder = OrderModel(
-      id: '', // Firestore gera ID do documento automaticamente
-      userId: userId, 
-      items: orderItems, 
-      totalPrice: totalPrice, 
-      status: OrderStatus.pending,
-      // Usando dados fixos por enquanto para o endereço e frete 
-      shippingAddress: 'Rua Atibaia 1, São Paulo (SP)', 
-      shippingPrice: 15.00, 
-      payMethod: 'Pix', 
-      createdAt: DateTime.now(),
-    );
-
     try {
+      // 1. Converte a lista de CartItemModel para uma lista de OrderItemModel
+      final orderItems = cartItems
+        .map((cartItems) => OrderItemModel(
+          productId: cartItems.product.id, 
+          productName: cartItems.product.name, 
+          quantity: cartItems.quantity, 
+          priceAtTimeOfOrder: cartItems.product.price
+        ))
+        .toList();
+
+      // 2. Cria um objeto OrderModel com os dados
+      final newOrder = OrderModel(
+        id: '', // Firestore gera ID do documento automaticamente
+        userId: userId, 
+        items: orderItems, 
+        totalPrice: totalPrice, 
+        status: OrderStatus.pending,
+        // Usando dados fixos por enquanto para o endereço e frete 
+        shippingAddress: 'Rua Atibaia 1, São Paulo (SP)', 
+        shippingPrice: 15.00, 
+        payMethod: 'Pix', 
+        createdAt: DateTime.now(),
+      );
+    
       // 3. Usa o serviço para salvar o pedido no Firestore
       await _orderService.createOrder(newOrder);
       // LIMPA O CARRINHO
-      _cartProvider.cleanCart();
-      // 4. Chama o fetchOrders de forma "silenciosa", sem que ele mostre seu próprio loading
-      await fetchOrders(setLoading: false);
+      _cartProvider.clearCart();
+      // NÃO PRECISA MAIS CHAMAR fetchOrders AQUI!
       return true;
     } catch (e) {
       _error = "Ocorreu um erro ao criar o seu pedido";
@@ -118,5 +119,12 @@ class OrderProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  // É crucial cancelar a inscrição ao destruir o provider para evitar memory leaks
+  @override
+  void dispose() {
+    _ordersSubscription?.cancel();
+    super.dispose();
   }
 }

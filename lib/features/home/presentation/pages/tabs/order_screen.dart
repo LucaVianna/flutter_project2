@@ -67,7 +67,7 @@ class OrderScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () => provider.fetchOrders(), 
+              onPressed: () => provider.listenToOrders(), 
               child: const Text(
                 'Tentar Novamente',
               ),

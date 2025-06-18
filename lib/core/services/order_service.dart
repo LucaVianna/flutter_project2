@@ -17,21 +17,19 @@ class OrderService {
     }
   }
 
-  // Busca a lista de pedidos de um usuário específico
-  Future<List<OrderModel>> fetchOrders(String userId) async {
-    try {
-      final querySnapshot = await _ordersCollection
-        .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true) // Ordena pelos mais recentes
-        .get();
+  // NOVO: Retorna um "vídeo ao vivo" (Stream) dos pedidos do usuário
+  Stream<List<OrderModel>> getOrdersStream(String userId) {
+    // .snapshots() é a chave aqui. Ele escuta as mudanças em tempo real
+    final snapshots = _ordersCollection
+      .where('userId', isEqualTo: userId)
+      .orderBy('createdAt', descending: true) // Ordena pelos mais recentes
+      .snapshots();
 
-      // Converte cada documento em um OrderModel
-      return querySnapshot.docs
+    // usamos .map para transformar o stream de 'QuerySnapshot' do Firebase em um stream da nossa lista de 'OrderModel'
+    return snapshots.map((snapshot) {
+      return snapshot.docs
         .map((doc) => OrderModel.fromFirestore(doc))
         .toList();
-    } catch (e) {
-      print('Erro ao buscar pedidos: $e');
-      return [];
-    }
+    });
   }
 }

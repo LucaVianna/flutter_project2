@@ -67,7 +67,7 @@ class CartProvider with ChangeNotifier {
   }
 
   // Método para limpar o carrinho completamente
-  void cleanCart() {
+  void clearCart() {
     _items.clear();
     notifyListeners();
   }

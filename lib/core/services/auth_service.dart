@@ -88,7 +88,7 @@ class AuthService {
     await _firebaseAuth.signOut();
   }
 
-  // MÉTODO PARA BUSCAR PERFIL DO USUÁRIO NO FIRESTORE (USADO PELO AUTHCONTROLLER)
+  // MÉTODO PARA BUSCAR PERFIL DO USUÁRIO NO FIRESTORE (USADO PELO AUTH PROVIDER)
   Future<UserModel?> getUserProfile(String uid) async {
     try {
       DocumentSnapshot doc = await _firestore.collection('users').doc(uid).get();
