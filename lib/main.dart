@@ -37,16 +37,23 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CartProvider()),
 
         // Provider dependente: OrderProvider depende de AuthProvider
-        ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
+        ChangeNotifierProxyProvider2<AuthProvider, CartProvider, OrderProvider>(
           // Instância inicial
-          create: (context) => OrderProvider(context.read<AuthProvider>()),
+          create: (context) => OrderProvider(
+            context.read<AuthProvider>(),
+            context.read<CartProvider>(),
+          ),
           // Sempre que o AuthProvider chama o notifyListeners() 
-          update: (context, authProvider, previousOrderProvider) {
-            // Criamos uma instância de OrderProvider com AuthProvider atualizado
-            // Nosso construtor já chama fetchOrders() se houver um usuário
-            return OrderProvider(authProvider);
-          }
-        )
+          update: (context, auth, cart, previousOrderProvider) {
+            // Se a instância anterior não existir (o que não deve acontecer após 'create'), cria uma nova por segurança
+            if (previousOrderProvider == null) {
+              return OrderProvider(auth, cart);
+            }
+            // Se já existe, apenas atualiza suas dependências e retorna a mesma instância
+            previousOrderProvider.updateDependencies(auth, cart);
+            return previousOrderProvider;
+          },
+        ),
       ],
       child: const MyApp(),
     ),

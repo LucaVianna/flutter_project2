@@ -168,23 +168,17 @@ class _CartScreenState extends State<CartScreen> {
                         : () async {
                           // --- Captura o que precisa ANTES do await
                           final scaffoldMessenger = ScaffoldMessenger.of(context);
-                          // Pega as instâncias dos providers necessários
-                          final cartProvider = context.read<CartProvider>();
+                          // Pega as instâncias do provider necessário
                           final orderProvider = context.read<OrderProvider>();
 
-                          //Chama o método para criar o pedido, passando os dados do carrinho
-                          final success = await orderProvider.createOrder(
-                            items: cartProvider.items, 
-                            totalPrice: cartProvider.totalPrice,
-                          );
+                          //Chama o método para criar o pedido
+                          final success = await orderProvider.createOrder();
 
                           // Se o widget ainda estiver montado na árvore
                           if (!mounted) return;
 
                           if (success) {
-                            // 1. Limpa o carrinho
-                            cartProvider.cleanCart();
-                            // 2. Mostra uma mensagem de sucesso
+                            // Mostra uma mensagem de sucesso
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
                                 content: Text('Pedido realizado com sucesso!'),

@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/order_service.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
+import 'cart_provider.dart';
 import '../../presentation/domain/entities/order_model.dart';
-import 'package:nectar_online_groceries/features/home/presentation/domain/entities/cart_item_model.dart';
 
 class OrderProvider with ChangeNotifier {
   final OrderService _orderService = OrderService();
-  final AuthProvider _authProvider; // Dependência do AuthProvider
+  AuthProvider _authProvider; // Dependência do AuthProvider
+  CartProvider _cartProvider; // Dependência do CartProvider
 
   // ESTADOS INTERNOS
   List<OrderModel> _orders = [];
@@ -20,11 +21,17 @@ class OrderProvider with ChangeNotifier {
 
   // Construtor recebe o AuthProvider
   // Injeção de Dependência
-  OrderProvider(this._authProvider) {
+  OrderProvider(this._authProvider, this._cartProvider) {
     // Se já houver um usuário logado quando o provider for criado, busca os pedidos
     if (_authProvider.currentUser != null) {
       fetchOrders();
     }
+  }
+
+  // NOVO MÉTODO: Usado pelo ProxyProvider para atualizar as dependências, sem recriar o objeto inteiro
+  void updateDependencies(AuthProvider authProvider, CartProvider cartProvider) {
+    _authProvider = authProvider;
+    _cartProvider = cartProvider;
   }
 
   // Busca os pedidos do usuário logado no Firestore
@@ -57,13 +64,12 @@ class OrderProvider with ChangeNotifier {
   }
 
   // Cria um novo pedido a partir dos itens do carrinho
-  Future<bool> createOrder({
-    required List<CartItemModel> items,
-    required double totalPrice,
-  }) async {
-    // Pega o ID do usuário logado. Se não houver, a ação falha
+  Future<bool> createOrder() async {
     final userId = _authProvider.currentUser?.uid;
-    if (userId == null || items.isEmpty) {
+    final cartItems = _cartProvider.items;
+    final totalPrice = _cartProvider.totalPrice;
+
+    if (userId == null || cartItems.isEmpty) {
       _error = "Usuário não logado ou carrinho vazio.";
       return false;
     }
@@ -73,7 +79,7 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
 
     // 1. Converte a lista de CartItemModel para uma lista de OrderItemModel
-    final orderItems = items
+    final orderItems = cartItems
       .map((cartItems) => OrderItemModel(
         productId: cartItems.product.id, 
         productName: cartItems.product.name, 
@@ -99,6 +105,8 @@ class OrderProvider with ChangeNotifier {
     try {
       // 3. Usa o serviço para salvar o pedido no Firestore
       await _orderService.createOrder(newOrder);
+      // LIMPA O CARRINHO
+      _cartProvider.cleanCart();
       // 4. Chama o fetchOrders de forma "silenciosa", sem que ele mostre seu próprio loading
       await fetchOrders(setLoading: false);
       return true;
