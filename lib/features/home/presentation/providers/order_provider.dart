@@ -28,14 +28,17 @@ class OrderProvider with ChangeNotifier {
   }
 
   // Busca os pedidos do usuário logado no Firestore
-  Future<void> fetchOrders() async {
+  // O parâmetro 'setLoading' nos permite chamá-lo silenciosamente de outros métodos
+  Future<void> fetchOrders({bool setLoading = true}) async {
     // Pega o ID do usuário através do AuthProvider
     final userId = _authProvider.currentUser?.uid;
     if (userId == null) return;
 
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+    if (setLoading) {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+    }
 
     try {
       _orders = await _orderService.fetchOrders(userId);
@@ -43,8 +46,13 @@ class OrderProvider with ChangeNotifier {
       _error = 'Não foi possível carregar os pedidos.';
       _orders = [];
     } finally {
-      _isLoading = false;
-      notifyListeners();
+      if (setLoading) {
+        _isLoading = false;
+        notifyListeners();
+      } else {
+        // Se não era para mostrar o loading, apenas notifica que os dados (a lista de pedidos) mudaram
+        notifyListeners();
+      }
     }
   }
 
@@ -61,6 +69,7 @@ class OrderProvider with ChangeNotifier {
     }
 
     _isLoading = true;
+    _error = null;
     notifyListeners();
 
     // 1. Converte a lista de CartItemModel para uma lista de OrderItemModel
@@ -73,30 +82,33 @@ class OrderProvider with ChangeNotifier {
       ))
       .toList();
 
-      // 2. Cria um objeto OrderModel com os dados
-      final newOrder = OrderModel(
-        id: '', // Firestore gera ID do documento automaticamente
-        userId: userId, 
-        items: orderItems, 
-        totalPrice: totalPrice, 
-        status: OrderStatus.pending,
-        // Usando dados fixos por enquanto para o endereço e frete 
-        shippingAddress: 'Rua Atibaia 1, São Paulo (SP)', 
-        shippingPrice: 15.00, 
-        payMethod: 'Pix', 
-        createdAt: DateTime.now(),
-      );
+    // 2. Cria um objeto OrderModel com os dados
+    final newOrder = OrderModel(
+      id: '', // Firestore gera ID do documento automaticamente
+      userId: userId, 
+      items: orderItems, 
+      totalPrice: totalPrice, 
+      status: OrderStatus.pending,
+      // Usando dados fixos por enquanto para o endereço e frete 
+      shippingAddress: 'Rua Atibaia 1, São Paulo (SP)', 
+      shippingPrice: 15.00, 
+      payMethod: 'Pix', 
+      createdAt: DateTime.now(),
+    );
 
-      try {
-        // 3. Usa o serviço para salvar o pedido no Firestore
-        await _orderService.createOrder(newOrder);
-        // 4. Após o sucesso, busca a lista de pedidos novamente para atualizar a UI
-        await fetchOrders();
-        return true;
-      } catch (e) {
-        _error = "Ocorreu um erro ao criar o seu pedido";
-        notifyListeners();
-        return false;
-      }
+    try {
+      // 3. Usa o serviço para salvar o pedido no Firestore
+      await _orderService.createOrder(newOrder);
+      // 4. Chama o fetchOrders de forma "silenciosa", sem que ele mostre seu próprio loading
+      await fetchOrders(setLoading: false);
+      return true;
+    } catch (e) {
+      _error = "Ocorreu um erro ao criar o seu pedido";
+      return false;
+    } finally {
+      // Garante que o loading da ação de criar pedido termine
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

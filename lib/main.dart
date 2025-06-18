@@ -1,5 +1,7 @@
 // Caminho lib/main.dart
 
+import 'package:intl/date_symbol_data_local.dart'; // intl
+
 import 'package:flutter/material.dart';
 import 'features/auth/presentation/pages/welcome_screen.dart';
 
@@ -22,6 +24,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await initializeDateFormatting('pt-br', null); // inicializando intl
 
   runApp(
     MultiProvider(

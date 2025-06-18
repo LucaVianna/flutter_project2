@@ -70,8 +70,8 @@ class OrderScreen extends StatelessWidget {
               onPressed: () => provider.fetchOrders(), 
               child: const Text(
                 'Tentar Novamente',
-              )
-            )
+              ),
+            ),
           ],
         ),
       );

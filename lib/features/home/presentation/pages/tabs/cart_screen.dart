@@ -166,6 +166,8 @@ class _CartScreenState extends State<CartScreen> {
                       onPressed: (context.watch<OrderProvider>().isLoading)
                         ? null
                         : () async {
+                          // --- Captura o que precisa ANTES do await
+                          final scaffoldMessenger = ScaffoldMessenger.of(context);
                           // Pega as instâncias dos providers necessários
                           final cartProvider = context.read<CartProvider>();
                           final orderProvider = context.read<OrderProvider>();
@@ -177,41 +179,41 @@ class _CartScreenState extends State<CartScreen> {
                           );
 
                           // Se o widget ainda estiver montado na árvore
-                          if (mounted) {
-                            if (success) {
-                              // 1. Limpa o carrinho
-                              cartProvider.cleanCart();
-                              // 2. Mostra uma mensagem de sucesso
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Pedido realizado com sucesso!'),
-                                  backgroundColor: Colors.green,
+                          if (!mounted) return;
+
+                          if (success) {
+                            // 1. Limpa o carrinho
+                            cartProvider.cleanCart();
+                            // 2. Mostra uma mensagem de sucesso
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                content: Text('Pedido realizado com sucesso!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            // Mostra uma mensagem de erro se algo falhar
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  orderProvider.error ?? 'Erro desconhecido.'
                                 ),
-                              );
-                            } else {
-                              // Mostra uma mensagem de erro se algo falhar
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    orderProvider.error ?? 'Erro desconhecido.'
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           }
                         }, 
                       child: (context.watch<OrderProvider>().isLoading)
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text('Finalizar Compra'),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
         ],
-      )
+      ),
     );
   }
 }
