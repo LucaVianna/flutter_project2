@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/services/order_service.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
 import 'cart_provider.dart';
-import '../../presentation/domain/entities/order_model.dart';
+import '../domain/entities/order_model.dart';
 
 class OrderProvider with ChangeNotifier {
   final OrderService _orderService = OrderService();
@@ -32,8 +32,16 @@ class OrderProvider with ChangeNotifier {
 
   // NOVO MÉTODO: Usado pelo ProxyProvider para atualizar as dependências, sem recriar o objeto inteiro
   void updateDependencies(AuthProvider authProvider, CartProvider cartProvider) {
+    // Verifica se o usuário mudou
+    final bool userChanged = _authProvider.currentUser?.uid != authProvider.currentUser?.uid;
+
     _authProvider = authProvider;
     _cartProvider = cartProvider;
+
+    // Se o usuário mudou, é necessário reiniciar a escuta para buscar os pedidos do novo contexto
+    if (userChanged) {
+      listenToOrders();
+    }
   }
 
   void listenToOrders() {

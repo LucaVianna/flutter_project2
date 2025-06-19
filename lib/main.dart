@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/home/presentation/providers/cart_provider.dart';
 import 'features/home/presentation/providers/order_provider.dart';
+import 'features/home/presentation/providers/product_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,9 @@ void main() async {
             return previousOrderProvider;
           },
         ),
+
+        // Provider para os produtos adicionados pelos admins
+        ChangeNotifierProvider(create: (context) => ProductProvider()),
       ],
       child: const MyApp(),
     ),
