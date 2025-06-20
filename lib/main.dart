@@ -44,7 +44,7 @@ void main() async {
             context.read<AuthProvider>(),
             context.read<CartProvider>(),
           ),
-          // Sempre que o AuthProvider chama o notifyListeners() 
+          // Sempre que o AuthProvider/CartProvider chama o notifyListeners() 
           update: (context, auth, cart, previousOrderProvider) {
             // Se a instância anterior não existir (o que não deve acontecer após 'create'), cria uma nova por segurança
             if (previousOrderProvider == null) {
@@ -56,8 +56,14 @@ void main() async {
           },
         ),
 
-        // Provider para os produtos adicionados pelos admins
-        ChangeNotifierProvider(create: (context) => ProductProvider()),
+        // Provider para os produtos adicionados pelos admins, agora depende de AuthProvider
+        ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
+          create: (context) => ProductProvider(context.read<AuthProvider>()), 
+          update: (context, auth, previousProductProvider) {
+            previousProductProvider!.updateDependencies(auth);
+            return previousProductProvider;
+          }
+        )
       ],
       child: const MyApp(),
     ),

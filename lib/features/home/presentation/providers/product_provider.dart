@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/product_service.dart';
 import '../domain/entities/product_model.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 
 // Provider para gerenciar o estado dos produtos da loja
 class ProductProvider with ChangeNotifier {
   final ProductService _productService = ProductService();
+  AuthProvider _authProvider; // NOVA DEPENDÊNCIA
   StreamSubscription? _productsSubscription;
 
   // ESTADOS INTERNOS
@@ -19,12 +21,35 @@ class ProductProvider with ChangeNotifier {
   String? get error => _error;
 
   // Construtor: inicia a escuta dos produtos assim que o provider é criado
-  ProductProvider() {
+  ProductProvider(this._authProvider) {
     _listenToProducts();
   }
 
-  // Inscreve-se no stream de produtos do ProductService
+  // Usando pelo ProxyProvider para atualizar a dependência e reiniciar a escuta
+  void updateDependencies(AuthProvider authProvider) {
+    // Se o usuário mudou, reinicia a busca por produtos
+    if (_authProvider.currentUser?.uid != authProvider.currentUser?.uid) {
+      _authProvider = authProvider;
+      _listenToProducts();
+    }
+  }
+
+  // Re(INICIA) a escuta do stream de produtos
   void _listenToProducts() {
+    _isLoading = true;
+    notifyListeners();
+
+    // Cancela a escuta anterior para evitar leaks
+    _productsSubscription?.cancel();
+
+    // Se o usuário não estiver logado, não tenta buscar produtos
+    if (_authProvider.currentUser == null) {
+      _products = [];
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     _productsSubscription = _productService.getProductsStream().listen(
      (products) {
       // Sucesso: atualiza a lista de produtos
