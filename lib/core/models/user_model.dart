@@ -7,12 +7,14 @@ class UserModel {
   final String email;
   final String name;
   final DateTime createdAt;
+  final bool isAdmin;
 
   UserModel({
     required this.uid,
     required this.email,
     required this.name,
     required this.createdAt,
+    this.isAdmin = false, // Valor padrão é false
   });
 
   // CONVERTE UM MAP VINDO DO FIRESTORE, PARA UM OBJ USERMODEL (LEITURA DE DADOS DO FIRESTORE)
@@ -22,6 +24,7 @@ class UserModel {
       email: data['email'] as String, 
       name: data['name'] as String, 
       createdAt: (data['createdAt'] as Timestamp).toDate(),
+      isAdmin: data['isAdmin'] ?? false,
     );
   }
 
@@ -32,6 +35,7 @@ class UserModel {
       'email': email,
       'name': name,
       'createdAt': Timestamp.fromDate(createdAt),
+      'isAdmin': isAdmin,
     };
   }
 }

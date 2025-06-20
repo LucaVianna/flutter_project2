@@ -1,6 +1,7 @@
 // Caminho lib/features/home/presentation/pages/tabs/profile_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:nectar_online_groceries/features/admin/presentation/pages/add_product_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../auth/presentation/providers/auth_provider.dart';
 
@@ -26,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       body: currentUser == null
-        //Fallback: caso não haja usuário, mostra loader ou mensagem
+        // Fallback: caso não haja usuário, mostra loader ou mensagem
         // Com o nosso AuthWrapper, este caso é raro, mas é bom ter
         ? const Center(
           child: CircularProgressIndicator(),
@@ -101,6 +102,36 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
             const Divider(),
+
+            // --- BLOCO DE CÓDIGO PARA ADMIN ---
+            if (currentUser.isAdmin)
+              Column(
+                children: [
+                  const Divider(),
+                  const ListTile(
+                    leading: Icon(Icons.shield_outlined),
+                    title: Text(
+                      'Área do Administrador',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const SizedBox(),
+                    title: const Text(
+                      'Gerenciar Produtos',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      // Adicionar a importação para a nova tela no topo do arquivo
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const AddProductScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
 
             // --- BOTÃO DE LOGOUT ---
             ListTile(
