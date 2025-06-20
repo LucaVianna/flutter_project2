@@ -1,3 +1,5 @@
+// lib/features/home/presentation/providers/product_provider.dart
+
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/product_service.dart';
@@ -22,7 +24,7 @@ class ProductProvider with ChangeNotifier {
 
   // Construtor: inicia a escuta dos produtos assim que o provider é criado
   ProductProvider(this._authProvider) {
-    _listenToProducts();
+    listenToProducts();
   }
 
   // Usando pelo ProxyProvider para atualizar a dependência e reiniciar a escuta
@@ -30,12 +32,12 @@ class ProductProvider with ChangeNotifier {
     // Se o usuário mudou, reinicia a busca por produtos
     if (_authProvider.currentUser?.uid != authProvider.currentUser?.uid) {
       _authProvider = authProvider;
-      _listenToProducts();
+      listenToProducts();
     }
   }
 
   // Re(INICIA) a escuta do stream de produtos
-  void _listenToProducts() {
+  void listenToProducts() {
     _isLoading = true;
     notifyListeners();
 

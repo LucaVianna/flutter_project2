@@ -55,11 +55,23 @@ class ShopScreen extends StatelessWidget {
     // 2. Estado de Erro
     if (provider.error != null) {
       return Center(
-        child: Text(
-          'Erro ao carregar produtos: ${provider.error}',
-          style: const TextStyle(
-            color: Colors.red,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              provider.error!,
+              style: const TextStyle(
+                color: Colors.red, 
+                fontSize: 16
+              ),
+              textAlign: TextAlign.center,
+              ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => provider.listenToProducts(),
+              child: const Text('Tentar Novamente'),
+            ),
+          ],
         ),
       );
     }

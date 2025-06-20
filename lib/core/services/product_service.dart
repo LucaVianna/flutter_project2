@@ -1,3 +1,5 @@
+// lib/core/services/product_service.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../features/home/presentation/domain/entities/product_model.dart';
 

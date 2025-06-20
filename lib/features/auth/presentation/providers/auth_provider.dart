@@ -17,13 +17,11 @@ class AuthProvider with ChangeNotifier{
 
   // ESTADOS INTERNOS
   bool _isLoading = false; // Para ações dos botões (Login/SignUp)
-  bool _isInitializing = true; // APENAS para inicialização do app
   String? _errorMessage;
   UserModel? _currentUser;
 
   // GETTERS PARA ACESSAR O ESTADO A PARTIR DA UI
   bool get isLoading => _isLoading;
-  bool get isInitializing => _isInitializing;
   String? get errorMessage => _errorMessage;
   UserModel? get currentUser => _currentUser;
 
@@ -33,6 +31,7 @@ class AuthProvider with ChangeNotifier{
     _authStateSubscription = _authService.authStateChanges.listen(_onAuthStateChanged);
   }
 
+  // ESTE MÉTODO É AGORA A ÚNICA FONTE DE VERDADE SOBRE O ESTADO DO USUÁRIO.
   // Listener: responsável pela inicialização e sempre que o estado muda (login, logout, etc)
   Future<void> _onAuthStateChanged(User? firebaseUser) async {    
     if (firebaseUser == null) {
@@ -42,11 +41,6 @@ class AuthProvider with ChangeNotifier{
       if (firebaseUser.uid != _currentUser?.uid) {
         _currentUser = await _authService.getUserProfile(firebaseUser.uid);
       }
-    }
-
-    // Se esta foi a primeira verificação desde que o app abriu, o processo de inicialização terminou
-    if (_isInitializing) {
-      _isInitializing = false;
     }
 
     notifyListeners(); // Notifica todos os widgets ouvintes ('watch' ou 'Consumer')
@@ -72,20 +66,18 @@ class AuthProvider with ChangeNotifier{
     notifyListeners();
 
     try {
-      // 1. O serviço de autenticação agora retorna o UserModel
-      final user = await _authService.signUpWithEmailAndPassword(
+      // Apenas PEDE ao Firebase para criar o usuário e logar.
+      await _authService.signUpWithEmailAndPassword(
         email: email, 
         password: password, 
-        name: name,
+        name: name
       );
-      _currentUser = user;
-      // 2. SUCESSO: comanda a navegação para a HomeScreen!
-      if (user != null) {
-        NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false,
-        );
-      }
+      
+      // O listener cuidará do resto e a navegação acontecerá.
+      NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
       String message = 'Ocorreu um erro de autenticação.';
       if (e.code == 'email-already-in-use') {
@@ -112,20 +104,19 @@ class AuthProvider with ChangeNotifier{
     notifyListeners();
 
     try {
-      // 1. O serviço de autenticação agora retorna o UserModel
-      final user = await _authService.signInWithEmailAndPassword(
+      // 1. Apenas PEDE ao Firebase para fazer o login.
+      await _authService.signInWithEmailAndPassword(
         email: email, 
-        password: password,
+        password: password
       );
-      _currentUser = user;
-
-      // 2. SUCESSO: comanda a navegação para a HomeScreen!
-      if (user != null) {
-        NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-          (route) => false,
-        );
-      }
+      
+      // 2. O listener _onAuthStateChanged vai cuidar de atualizar o estado.
+      
+      // 3. Navega para a HomeScreen após o sucesso.
+      NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        (route) => false,
+      );
     } on FirebaseAuthException catch(e) {
       String message = 'Ocorreu um erro de autenticação.';
       if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
