@@ -48,7 +48,7 @@ class ProductModel {
       description: data['description'] ?? '', 
       nutrition: data['nutrition'] ?? '', 
       weight: data['weight'] ?? '', 
-      price: (data['price'] ?? 0.0).toDouble, 
+      price: (data['price'] ?? 0.0).toDouble(),
       active: data['active'] ?? false, 
       imagePath: data['imagePath'] ?? '',
     );

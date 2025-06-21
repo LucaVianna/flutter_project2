@@ -143,23 +143,6 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                 ],
               ),
-              ExpansionTile(
-                title: const Text(
-                  'Avaliações',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18
-                  ),
-                ),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 24)),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 20),   
               Center(
                 child: ElevatedButton(
