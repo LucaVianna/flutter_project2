@@ -36,4 +36,37 @@ class ProductService {
       }).toList();
     });
   }
+
+  // --- MÉTODO NOVO UPDATE ---
+  // Atualiza um documento de produto existente no Firestore
+  Future<void> updateProduct(ProductModel product) async {
+    try {
+      // Usamos .doc(product.id).update() para editar um documento específico
+      await _productCollection.doc(product.id).update(product.toMap());
+    } catch (e) {
+      print('Erro ao atualizar produto: $e');
+      rethrow;
+    }
+  }
+
+  // --- MÉTODO NOVO DELETE ---
+  // Exclui um documento de produto do Firestore
+  Future<void> deleteProduct(String productId) async {
+    try {
+      // Usamos .doc(productId).delete() para remover um documento
+      await _productCollection.doc(productId).delete();
+    } catch (e) {
+      print('Erro ao deletar produto: $e');
+      rethrow;
+    }
+  }
+
+  // --- MÉTODO NOVO READ ADMIN ---
+  // Retorna um Stream de todos os produtos, ativos e inativos, para a tela de gerenciamento
+  Stream<List<ProductModel>> getAllProductsStreamForAdmin() {
+    // Consulta sem FILTRO!
+    return _productCollection.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => ProductModel.fromFirestore(doc)).toList();
+    });
+  }
 }
