@@ -79,14 +79,7 @@ class MyApp extends StatelessWidget {
       title: 'Nectar Online Groceries',
       navigatorKey: NavigationService.navigatorKey,
       theme: ThemeData(
-        // elevatedButtonTheme: ElevatedButtonThemeData(
-        //   style: ElevatedButton.styleFrom(
-        //     backgroundColor: Color(0xFF4AA66C),
-        //     foregroundColor: Colors.white,
-        //   ),
-        // ),
-
-        // THEME INPUT FIELD
+        // --- THEME INPUT FIELD
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -101,7 +94,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
-        // THEME GERAL
+        // --- THEME GERAL
         primaryColor: const Color(0xFF4AA66C),
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: const MaterialColor(
@@ -119,10 +112,30 @@ class MyApp extends StatelessWidget {
               900: Color(0xFF1B5E20),
             },
           ),
-        ).copyWith(secondary: const Color(0xFFFFC107))
+        ).copyWith(secondary: const Color(0xFFFFC107)),
+
+        // --- BLOCO NOVO PARA O THUMB E TRACK
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF4AA66C);
+            }
+            // Se estiver desativado
+            return Colors.grey.shade400;
+          }),
+          trackColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF4AA66C).withAlpha(128);
+            }
+            // Se estiver desativado
+            return Colors.grey.shade200;
+          }),
+        ),
       ),
+      // ====================================================================================
+
       // 2. Removemos o AuthWrapper. A tela inicial será sempre a WelcomeScreen
-      // A lógica de navegação será feita pelo AuthController agora
+      // A lógica de navegação será feita pelo AuthProvider agora
       home: const WelcomeScreen(),
     );
   }
