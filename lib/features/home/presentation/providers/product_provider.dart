@@ -10,35 +10,54 @@ import '../../../auth/presentation/providers/auth_provider.dart';
 class ProductProvider with ChangeNotifier {
   final ProductService _productService = ProductService();
   AuthProvider _authProvider; // NOVA DEPENDÊNCIA
+
+  // Stream para os clientes (produtos ativos)
   StreamSubscription? _productsSubscription;
+  List<ProductModel> _products = [];
+
+  // --- NOVO: STREAM PARA OS ADMINS (TODOS OS PRODUTOS)
+  StreamSubscription? _allProductsSubscription;
+  List<ProductModel> _allProducts = [];
 
   // ESTADOS INTERNOS
-  List<ProductModel> _products = [];
-  bool _isLoading = true; // Inicia carregando
+  bool _isShopLoading = true;
+  bool _isAdminLoading = true;
   String? _error;
 
-  // GETTERS PÚBLICOS
+  // GETTER PARA A LOJA DO CLIENTE
   List<ProductModel> get products => _products;
-  bool get isLoading => _isLoading;
+
+  // --- NOVO: GETTER PARA A TELA DO ADMIN
+  List<ProductModel> get allProducts => _allProducts;
+
+  // GETTERS PÚBLICOS
+  bool get isShopLoading => _isShopLoading;
+  bool get isAdminLoading => _isAdminLoading;
   String? get error => _error;
 
   // Construtor: inicia a escuta dos produtos assim que o provider é criado
   ProductProvider(this._authProvider) {
+    // Inicia ambas as escutas
     listenToProducts();
+    listenToAllProductsForAdmin();
   }
 
   // Usando pelo ProxyProvider para atualizar a dependência e reiniciar a escuta
   void updateDependencies(AuthProvider authProvider) {
-    // Se o usuário mudou, reinicia a busca por produtos
-    if (_authProvider.currentUser?.uid != authProvider.currentUser?.uid) {
-      _authProvider = authProvider;
-      listenToProducts();
-    }
+    // ESTA CLÁUSULA IF FOI DESATIVADA PARA MELHORAR AS ATUALIZAÇÕES EM TEMPO REAL
+    // NÃO É MAIS NECESSÁRIO REINICIAR O APP EM ALGUNS CASOS
+
+    // if (_authProvider.currentUser?.uid != authProvider.currentUser?.uid) {
+    _authProvider = authProvider;
+    // Reinicia ambas as escutas quando o usuário muda
+    listenToProducts();
+    listenToAllProductsForAdmin();
+    // }
   }
 
-  // Re(INICIA) a escuta do stream de produtos
+  // Re(INICIA) a escuta do stream do cliente
   void listenToProducts() {
-    _isLoading = true;
+    _isShopLoading = true;
     notifyListeners();
 
     // Cancela a escuta anterior para evitar leaks
@@ -47,7 +66,7 @@ class ProductProvider with ChangeNotifier {
     // Se o usuário não estiver logado, não tenta buscar produtos
     if (_authProvider.currentUser == null) {
       _products = [];
-      _isLoading = false;
+      _isShopLoading = false;
       notifyListeners();
       return;
     }
@@ -56,16 +75,41 @@ class ProductProvider with ChangeNotifier {
      (products) {
       // Sucesso: atualiza a lista de produtos
       _products = products;
-      _isLoading = false;
+      _isShopLoading = false;
       _error = null;
       notifyListeners();
      }, onError: (e) {
       // Erro: atualiza a mensagem de erro
       _error = 'Não foi possível carregar os produtos.';
-      _isLoading = false;
+      _isShopLoading = false;
       notifyListeners();
      },
     );
+  }
+
+  // --- NOVO: Escuta TODOS os produtos para a tela do admin
+  void listenToAllProductsForAdmin() {
+    _isAdminLoading = true;
+    notifyListeners();
+    _allProductsSubscription?.cancel();
+
+    // Apenas admins podem escutar todos os produtos
+    if (_authProvider.currentUser == null || !_authProvider.currentUser!.isAdmin) {
+      _allProducts = [];
+      _isAdminLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    _allProductsSubscription = _productService.getAllProductsStreamForAdmin().listen((products) {
+      _allProducts = products;
+      _isAdminLoading = false;
+      notifyListeners();
+    }, onError: (e) {
+      _error = 'Não foi possível carregar a lista de gerenciamento.';
+      _isAdminLoading = false;
+      notifyListeners();
+    });
   }
 
   // Adiciona um novo produto ao Firestore
@@ -100,10 +144,31 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
+  // --- NOVO: Atualiza um produto existente
+  Future<bool> updateProduct(ProductModel product) async {
+    try {
+      await _productService.updateProduct(product);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // --- NOVO: Deleta um produto
+  Future<bool> deleteProduct(String productId) async {
+    try {
+      await _productService.deleteProduct(productId);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // Limpa os recursos, cancelando a inscrição do stream para evitar memory leaks
   @override
   void dispose() {
     _productsSubscription?.cancel();
+    _allProductsSubscription?.cancel();
     super.dispose();
   }
 }

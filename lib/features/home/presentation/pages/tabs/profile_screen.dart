@@ -1,7 +1,7 @@
 // Caminho lib/features/home/presentation/pages/tabs/profile_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:nectar_online_groceries/features/admin/presentation/pages/add_product_screen.dart';
+import 'package:nectar_online_groceries/features/admin/presentation/pages/manage_products_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../auth/presentation/providers/auth_provider.dart';
 
@@ -126,7 +126,7 @@ class ProfileScreen extends StatelessWidget {
                     onTap: () {
                       // Adicionar a importação para a nova tela no topo do arquivo
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const AddProductScreen()),
+                        MaterialPageRoute(builder: (context) => const ManageProductsScreen()),
                       );
                     },
                   ),

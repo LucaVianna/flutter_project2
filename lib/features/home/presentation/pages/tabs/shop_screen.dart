@@ -46,7 +46,7 @@ class ShopScreen extends StatelessWidget {
   // Contrói o corpo da tela baseado no estado do ProductProvider
   Widget _buildBody(BuildContext context, ProductProvider provider) {
     // 1. Estado de Carregamento
-    if (provider.isLoading) {
+    if (provider.isShopLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
