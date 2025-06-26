@@ -47,7 +47,7 @@ class OrderScreen extends StatelessWidget {
   // Widget auxiliar para construir o corpo da tela de acordo com o estado
   Widget _buildBody(BuildContext context, OrderProvider provider) {
     // 1. Estado de Carregamento
-    if (provider.isLoading) {
+    if (provider.isOrdersLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );

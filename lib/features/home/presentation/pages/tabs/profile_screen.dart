@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:nectar_online_groceries/features/admin/presentation/pages/manage_products_screen.dart';
+import 'package:nectar_online_groceries/features/admin/presentation/pages/manage_orders_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../auth/presentation/providers/auth_provider.dart';
 
@@ -127,6 +128,18 @@ class ProfileScreen extends StatelessWidget {
                       // Adicionar a importação para a nova tela no topo do arquivo
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => const ManageProductsScreen()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading: const SizedBox(),
+                    title: const Text(
+                      'Gerenciar Pedidos',
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const ManageOrdersScreen())
                       );
                     },
                   ),

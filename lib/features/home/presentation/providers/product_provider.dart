@@ -49,7 +49,6 @@ class ProductProvider with ChangeNotifier {
 
     // if (_authProvider.currentUser?.uid != authProvider.currentUser?.uid) {
     _authProvider = authProvider;
-    // Reinicia ambas as escutas quando o usuário muda
     listenToProducts();
     listenToAllProductsForAdmin();
     // }
@@ -94,22 +93,21 @@ class ProductProvider with ChangeNotifier {
     _allProductsSubscription?.cancel();
 
     // Apenas admins podem escutar todos os produtos
-    if (_authProvider.currentUser == null || !_authProvider.currentUser!.isAdmin) {
+    if (_authProvider.currentUser?.isAdmin ?? false) {
+      _allProductsSubscription = _productService.getAllProductsStreamForAdmin().listen((products) {
+        _allProducts = products;
+        _isAdminLoading = false;
+        notifyListeners();
+      }, onError: (e) {
+        _error = 'Não foi possível carregar a lista de gerenciamento.';
+        _isAdminLoading = false;
+        notifyListeners();
+      });
+    } else {
       _allProducts = [];
       _isAdminLoading = false;
       notifyListeners();
-      return;
-    }
-
-    _allProductsSubscription = _productService.getAllProductsStreamForAdmin().listen((products) {
-      _allProducts = products;
-      _isAdminLoading = false;
-      notifyListeners();
-    }, onError: (e) {
-      _error = 'Não foi possível carregar a lista de gerenciamento.';
-      _isAdminLoading = false;
-      notifyListeners();
-    });
+    }   
   }
 
   // Adiciona um novo produto ao Firestore

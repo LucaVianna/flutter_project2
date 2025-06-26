@@ -163,7 +163,7 @@ class _CartScreenState extends State<CartScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       // Desabilita o botão se o OrderProvider estiver carregando
-                      onPressed: (context.watch<OrderProvider>().isLoading)
+                      onPressed: (context.watch<OrderProvider>().isOrdersLoading)
                         ? null
                         : () async {
                           // --- Captura o que precisa ANTES do await
@@ -197,7 +197,7 @@ class _CartScreenState extends State<CartScreen> {
                             );
                           }
                         }, 
-                      child: (context.watch<OrderProvider>().isLoading)
+                      child: (context.watch<OrderProvider>().isOrdersLoading)
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text('Finalizar Compra'),
                     ),

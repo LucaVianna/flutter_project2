@@ -32,4 +32,30 @@ class OrderService {
         .toList();
     });
   }
+
+  // --- NOVO MÉTODO: (UPDATE) ---
+  // Atualiza apenas o status de um pedido específico no Firestore
+  Future<void> updateOrderStatus(String orderId, OrderStatus newStatus) async {
+    try {
+      // Usamos .doc(orderId).update() para editar campos específicos de um documento
+      await _ordersCollection.doc(orderId).update({
+      // O Firestore espera um Map dos campos a serem alterados
+      // Usamos .name para converter nosso enum 'OrderStatus' em string
+        'status': newStatus.name
+      });
+    } catch (e) {
+      print('Erro ao atualizar o status do pedido: $e');
+      rethrow;
+    }
+  }
+
+  // --- NOVO MÉTODO: (READ para ADMIN) ---
+  // Retorna o Stream de TODOS os pedidos para a tela de gerenciamento (mais recentes primero)
+  Stream<List<OrderModel>> getAllOrdersStreamForAdmin() {
+    final query = _ordersCollection.orderBy('createdAt', descending: true);
+
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => OrderModel.fromFirestore(doc)).toList();
+    });
+  }
 }

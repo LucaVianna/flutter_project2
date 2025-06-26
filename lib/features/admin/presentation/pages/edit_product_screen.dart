@@ -110,6 +110,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
             appBar: AppBar(
                 title: const Text(
                     'Editar Produto',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                 ),
             ),
             body: SingleChildScrollView(
