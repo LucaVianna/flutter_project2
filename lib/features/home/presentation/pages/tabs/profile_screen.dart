@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:nectar_online_groceries/features/admin/presentation/pages/manage_products_screen.dart';
 import 'package:nectar_online_groceries/features/admin/presentation/pages/manage_orders_screen.dart';
+// import 'settings_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../auth/presentation/providers/auth_provider.dart';
 
@@ -73,23 +74,16 @@ class ProfileScreen extends StatelessWidget {
 
             // --- OPÇÕES DO MENU ---
             ListTile(
-              leading: const Icon(Icons.shopping_bag_outlined),
-              title: const Text(
-                'Meus pedidos',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                // Futuramente, navegar para a tela de pedidos
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.settings_outlined),
               title: const Text(
                 'Configurações',
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                // Futuramente, navegar para a tela de configurações
+                // Navega para a tela de configurações
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(builder: (ctx) => const SettingsScreen())
+                // );
               },
             ),
             ListTile(
@@ -108,7 +102,6 @@ class ProfileScreen extends StatelessWidget {
             if (currentUser.isAdmin)
               Column(
                 children: [
-                  const Divider(),
                   const ListTile(
                     leading: Icon(Icons.shield_outlined),
                     title: Text(
