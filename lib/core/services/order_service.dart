@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../features/home/presentation/domain/entities/order_model.dart';
+import '../../features/home/domain/entities/order_model.dart';
 
 class OrderService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

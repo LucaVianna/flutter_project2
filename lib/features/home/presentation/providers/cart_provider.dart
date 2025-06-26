@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import '../domain/entities/cart_item_model.dart';
-import '../domain/entities/product_model.dart';
+import '../../domain/entities/cart_item_model.dart';
+import '../../domain/entities/product_model.dart';
 
 class CartProvider with ChangeNotifier {
   // Lista privada de itens no carrinho

@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../../../../core/services/product_service.dart';
-import '../domain/entities/product_model.dart';
+import '../../domain/entities/product_model.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 
 // Provider para gerenciar o estado dos produtos da loja

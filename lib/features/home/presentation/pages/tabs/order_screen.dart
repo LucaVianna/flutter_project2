@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../../presentation/domain/entities/order_model.dart';
+import '../../../domain/entities/order_model.dart';
 import '../../providers/order_provider.dart';
 
 class OrderScreen extends StatelessWidget {
