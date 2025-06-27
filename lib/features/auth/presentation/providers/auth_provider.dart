@@ -190,6 +190,29 @@ class AuthProvider with ChangeNotifier{
     }
   }
 
+  // --- NOVO: MÉTODO DELETE
+  // Inicia o processo de exclusão da conta do usuário atual
+  Future<String?> deleteCurrentUserAcount() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _authService.deleteUserAccount();
+      
+      NavigationService.navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        (route) => false,
+      );
+
+      return null;
+    } catch (e) {
+      return e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // MÉTODO AUXILIAR PARA LIMPAR A MENSAGEM DE ERRO
   void clearErrorMessage() {
     if (_errorMessage != null) {

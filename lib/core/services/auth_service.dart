@@ -113,4 +113,34 @@ class AuthService {
       rethrow;
     }
   }
+
+  // --- NOVO: MÉTODO DELETE
+  // Exclui a conta de um usuário tanto do Authentication quanto do Firestore
+  Future<void> deleteUserAccount() async {
+    try {
+      // Pega o usuário atualmente logado no Auth
+      final User? user = _firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception('Nenhum usuário logado para excluir.');
+      }
+
+      final String uid = user.uid;
+
+      // Etapa 1: Excluir o documento do perfil no Firestore
+      await _firestore.collection('users').doc(uid).delete();
+
+      // Etapa 2: Excluir o registro de autenticação do usuário
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      // Trata erros específicos do Auth
+      print('Erro de autenticação ao excluir conta: ${e.code}');
+      if (e.code == 'requires-recent-login') {
+        throw Exception('Por segurança, faça login novamente antes de excluir sua conta.');
+      }
+      rethrow;
+    } catch (e) {
+      print('Erro ao excluir conta de usuário: $e');
+      rethrow;
+    }
+  }
 }
