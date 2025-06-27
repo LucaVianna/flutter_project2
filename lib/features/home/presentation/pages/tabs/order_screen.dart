@@ -101,7 +101,7 @@ class OrderScreen extends StatelessWidget {
         // Usamos um ExpansionTile para criar um card "sanfona"
         return Card(
           elevation: 3,
-          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: ExpansionTile(
             // --- TÍTULO DO CARD (VÍSIVEL QUANDO FECHADO)
@@ -128,7 +128,7 @@ class OrderScreen extends StatelessWidget {
             // CONTEÚDO DO CARD (VISÍVEL QUANDO ABERTO)
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -167,6 +167,65 @@ class OrderScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+
+                    const Divider(),
+                    // --- NOVO: BLOCO CONDICIONAL PARA O BOTÃO DE CANCELAMENTO
+                    // Mostra apenas se o status for 'Pendente'
+                    if (order.status == OrderStatus.pending)
+                      Center(
+                        child: TextButton.icon(
+                          icon: const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red,
+                          ),
+                          label: const Text(
+                            'Cancelar Pedido',
+                            style: TextStyle(
+                              color: Colors.red
+                            ),
+                          ),
+                          onPressed: () async {
+                            // Mostra um diálogo de confirmação antes de cancelar
+                            final bool? confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text(
+                                  'Confirmar Cancelamento',
+                                ),
+                                content: const Text(
+                                  'Tem certeza de que deseja cancelar este pedido?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(ctx).pop(false), 
+                                    child: const Text(
+                                      'Não',
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => Navigator.of(ctx).pop(true), 
+                                    child: const Text(
+                                      'Sim, Cancelar',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            // Se o usuário confirmou
+                            if (confirmed == true) {
+                              // chama o método para atualizar o status
+                              context.read<OrderProvider>().updateOrderStatus(
+                                order.id, 
+                                OrderStatus.cancelled,
+                              );
+                            }
+                          }, 
+                        ),
+                      ),
                   ],
                 ),
               )

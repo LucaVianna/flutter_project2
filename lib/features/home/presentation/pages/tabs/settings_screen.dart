@@ -96,6 +96,12 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   actions: [
                     TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false), 
+                      child: const Text(
+                        'Não',
+                      ),
+                    ),
+                    TextButton(
                       // O botão 'Cancelar' retorna false
                       onPressed: () => Navigator.of(ctx).pop(true), 
                       child: const Text(
