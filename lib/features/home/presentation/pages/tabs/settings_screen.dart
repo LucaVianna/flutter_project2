@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'edit_profile_screen.dart';
 
 // Futuramente importaremos a tela de edição aqui
 // import 'edit_profile_screen.dart';
@@ -10,7 +11,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Configurações',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -29,11 +30,9 @@ class SettingsScreen extends StatelessWidget {
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
-              // Ação de Editar Perfil (A ser implementado)
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text(
-                  'Tela de Editar Perfil a ser implementada'
-                )),
+              // Ação de Editar Perfil
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => const EditProfileScreen())
               );
             },
           ),

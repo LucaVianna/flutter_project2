@@ -117,6 +117,19 @@ class ManageOrdersScreen extends StatelessWidget {
 
     // Estado de Sucesso
     final allOrders = provider.allOrders;
+
+    if (allOrders.isEmpty) {
+      return const Center(
+        child: Text(
+          'Nenhum pedido cadastrado.',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: allOrders.length,
       itemBuilder: (ctx, index) {

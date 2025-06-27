@@ -153,6 +153,43 @@ class AuthProvider with ChangeNotifier{
     }
   }
 
+  // --- NOVO: MÉTODO UPDATE
+  // Atualiza o nome do usuário, salva no Firestore e atualiza o estado local
+  Future<bool> updateUserProfile({required String newName}) async {
+    // Garante que só tentaremos atualizar se houver um usuário logado
+    if (_currentUser == null) return false;
+
+    // Para uma boa UX podemos mostrar um indicador de carregamento
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      // 1. Prepara o mapa de dados apenas com o campo que mudou
+      final dataToUpdate = {'name': newName};
+
+      // 2. Chama o serviço para salvar a mudança no Firestore
+      await _authService.updateUserProfile(_currentUser!.uid, dataToUpdate);
+
+      // 3. Atualização LOCAL: Atualiza o obj _currentUser na memória
+      // UI MUDA INSTANTANEAMENTE
+      _currentUser = UserModel(
+        uid: _currentUser!.uid, 
+        email: _currentUser!.email, 
+        name: newName, // NOVO NOME 
+        createdAt: _currentUser!.createdAt,
+        isAdmin: _currentUser!.isAdmin,
+      );
+
+      return true;
+    } catch (e) {
+      print('Erro no AuthProvider ao atualizar perfil: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // MÉTODO AUXILIAR PARA LIMPAR A MENSAGEM DE ERRO
   void clearErrorMessage() {
     if (_errorMessage != null) {

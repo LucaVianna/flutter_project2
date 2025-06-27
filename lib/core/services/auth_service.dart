@@ -101,4 +101,16 @@ class AuthService {
       return null;
     }
   }
+
+  // --- NOVO: MÉTODO UPDATE
+  // Atualiza os dados do perfil de um usuário no Firestore
+  Future<void> updateUserProfile(String uid, Map<String, dynamic> data) async {
+    try {
+      // Usamos .doc(uid).update() para editar os campos do documento do usuário
+      await _firestore.collection('users').doc(uid).update(data);
+    } catch (e) {
+      print('Erro ao atualizar perfil do usuário: $e');
+      rethrow;
+    }
+  }
 }
