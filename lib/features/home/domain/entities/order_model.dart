@@ -55,7 +55,6 @@ class OrderModel {
   final double shippingPrice;
   final String payMethod; // Ex: "cartão de crédito", "pix"
   // final CouponModel? coupon;
-  final String? deliveryImage;
   final DateTime createdAt;
 
   OrderModel({
@@ -68,7 +67,6 @@ class OrderModel {
     required this.shippingPrice,
     required this.payMethod,
     // this.coupon,
-    this.deliveryImage,
     required this.createdAt,
   });
 
@@ -82,7 +80,6 @@ class OrderModel {
       'shippingAddress': shippingAddress,
       'shippingPrice': shippingPrice,
       'payMethod': payMethod,
-      'deliveryImage': deliveryImage,
       'createdAt': Timestamp.fromDate(createdAt), // Converte DateTime para Timestamp
     };
   }
@@ -106,7 +103,6 @@ class OrderModel {
       shippingAddress: data['shippingAddress'],
       shippingPrice: data['shippingPrice']?.toDouble() ?? 0.0,
       payMethod: data['payMethod'],
-      deliveryImage: data['deliveryImage'],
       // Converte o Timestamp do Firestore de volta para DateTime
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
