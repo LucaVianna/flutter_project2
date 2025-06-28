@@ -138,7 +138,6 @@ class OrderScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold
                       ),
                     ),
-                    const Divider(),
                     // Mapeia cada item do pedido para um ListTile
                     ...order.items.map((item) => ListTile(
                       dense: true,
@@ -185,6 +184,8 @@ class OrderScreen extends StatelessWidget {
                             ),
                           ),
                           onPressed: () async {
+                            // Captura a referência ao provider ANTES do await
+                            final orderProvider = context.read<OrderProvider>();
                             // Mostra um diálogo de confirmação antes de cancelar
                             final bool? confirmed = await showDialog<bool>(
                               context: context,
@@ -218,7 +219,7 @@ class OrderScreen extends StatelessWidget {
                             // Se o usuário confirmou
                             if (confirmed == true) {
                               // chama o método para atualizar o status
-                              context.read<OrderProvider>().updateOrderStatus(
+                              orderProvider.updateOrderStatus(
                                 order.id, 
                                 OrderStatus.cancelled,
                               );

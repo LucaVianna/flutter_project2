@@ -176,19 +176,19 @@ class ManageOrdersScreen extends StatelessWidget {
               )),
 
               const Divider(),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () => _showStatusMenu(context, provider, order),
-                  label: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 0.5, horizontal: 2),
-                    child: Text(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () => _showStatusMenu(context, provider, order),
+                    label: const Text(
                       'Alterar Status'
                     ),
+                    icon: const Icon(Icons.edit_note),
                   ),
-                  icon: const Icon(Icons.edit_note),
                 ),
               ),
-              const SizedBox(height: 10),
             ],
           ),
         );

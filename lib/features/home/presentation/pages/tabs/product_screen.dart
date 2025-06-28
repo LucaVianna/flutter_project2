@@ -26,7 +26,7 @@ class _ProductScreenState extends State<ProductScreen> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -144,7 +144,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 ],
               ),
               const SizedBox(height: 20),   
-              Center(
+              SizedBox(
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     // AÇÃO PRINCIPAL: Usa o provider para adicionar a quantidade certa
@@ -156,19 +157,8 @@ class _ProductScreenState extends State<ProductScreen> {
                       )),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    // Cor definida no ThemeData
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
                   child: const Text(
                     'Adicionar ao Carrinho',
-                    style: TextStyle(
-                      fontSize: 18,
-                      // Cor definida no ThemeData
-                    ),
                   ),
                 ),
               ),
