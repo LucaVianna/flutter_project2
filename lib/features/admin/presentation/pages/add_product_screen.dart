@@ -164,11 +164,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: _isSaving ? null : _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16)
-                  ), 
                   child: _isSaving
-                    ? const CircularProgressIndicator()
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                       'Salvar Produto',
                     ),

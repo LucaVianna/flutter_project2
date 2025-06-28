@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../../home/domain/entities/order_model.dart';
+import '../../../../data/models/order_model.dart';
 import '../../../home/presentation/providers/order_provider.dart';
 
 class ManageOrdersScreen extends StatelessWidget {
@@ -178,13 +178,17 @@ class ManageOrdersScreen extends StatelessWidget {
               const Divider(),
               Center(
                 child: ElevatedButton.icon(
-                  onPressed: () => _showStatusMenu(context, provider, order), 
-                  label: const Text(
-                    'Alterar Status'
+                  onPressed: () => _showStatusMenu(context, provider, order),
+                  label: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 0.5, horizontal: 2),
+                    child: Text(
+                      'Alterar Status'
+                    ),
                   ),
                   icon: const Icon(Icons.edit_note),
                 ),
               ),
+              const SizedBox(height: 10),
             ],
           ),
         );

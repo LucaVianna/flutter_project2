@@ -96,15 +96,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: _isLoading ? null : _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ), 
                   child: _isLoading
-                    ? const SizedBox(
-                      height: 24,
-                      width: 24,
-                      child: CircularProgressIndicator(strokeWidth: 3, color: Colors.white),
-                    )
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                       'Salvar alterações'
                     ),

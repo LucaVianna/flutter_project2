@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../home/domain/entities/product_model.dart';
+import '../../../../data/models/product_model.dart';
 import '../../../home/presentation/providers/product_provider.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -205,9 +205,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                                 ElevatedButton(
                                     onPressed: _isSaving ? null : _submitForm,
-                                    style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(vertical: 16),
-                                    ), 
                                     child: _isSaving
                                         ? const CircularProgressIndicator(color: Colors.white)
                                         : const Text('Salvar Alterações')

@@ -3,8 +3,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../../core/models/user_model.dart';
-import '../../../../core/services/auth_service.dart';
+import '../../../../data/models/user_model.dart';
+import '../../../../data/services/auth_service.dart';
 import '../../../../core/services/navigation_service.dart';
 import '../../../home/presentation/pages/home_screen.dart';
 import '../pages/welcome_screen.dart';

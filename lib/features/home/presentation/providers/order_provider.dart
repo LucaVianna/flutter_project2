@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import '../../../../core/services/order_service.dart';
+import '../../../../data/services/order_service.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
 import 'cart_provider.dart';
-import '../../domain/entities/order_model.dart';
+import '../../../../data/models/order_model.dart';
 
 class OrderProvider with ChangeNotifier {
   final OrderService _orderService = OrderService();

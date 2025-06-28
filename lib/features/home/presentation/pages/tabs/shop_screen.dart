@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../domain/entities/product_model.dart';
+import '../../../../../data/models/product_model.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/product_provider.dart';
 import 'product_screen.dart';
@@ -185,7 +185,6 @@ class ShopScreen extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       ), 
                       child: const Icon(Icons.add, size: 20),
                     ),

@@ -73,20 +73,8 @@ class WelcomeScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const SignUpScreen()),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      // Cor definida no ThemeData
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)
-                      ),
-                    ),
                     child: const Text(
                       'Começar',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        // Cor definida do ThemeData
-                      ),
                     ),
                   ),
                 ),
