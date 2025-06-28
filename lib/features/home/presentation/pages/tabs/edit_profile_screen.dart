@@ -11,8 +11,16 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  // Será iniciado uma vez e nunca mais mudará
+  late TextEditingController _nameController;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialName = context.read<AuthProvider>().currentUser?.name ?? '';
+    _nameController = TextEditingController(text: initialName);
+  }
 
   @override
   void dispose() {
