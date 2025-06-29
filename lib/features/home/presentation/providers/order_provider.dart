@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../data/services/order_service.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
 import 'cart_provider.dart';
@@ -52,6 +53,9 @@ class OrderProvider with ChangeNotifier {
     _isOrdersLoading = true;
     notifyListeners();
 
+    // Cancela qualquer escuta anterior para evitar duplicatas
+    _ordersSubscription?.cancel();
+
     final userId = _authProvider.currentUser?.uid;
     if (userId == null) {
       _isOrdersLoading = false;
@@ -60,12 +64,33 @@ class OrderProvider with ChangeNotifier {
       return;
     }
 
-    // Cancela qualquer escuta anterior para evitar duplicatas
-    _ordersSubscription?.cancel();
-
     // Se inscreve no stream do serviço
-    _ordersSubscription = _orderService.getOrdersStream(userId).listen((orders) {
-      _orders = orders;
+    _ordersSubscription = _orderService.getOrdersStream(userId).listen((newOrders) {
+
+      // --- LÓGICA DE DETECÇÃO DE MUDANÇA (COMPARA COM ORDERS ANTIGAS PARA NOTIFICAR O USUÁRIO) ---
+      for (var newOrder in newOrders) {
+        try {
+          // Encontramos o pedido correspondente na lista antiga. Caso contrário, vai direto para o 'catch'
+          final oldOrder = _orders.firstWhere((o) => o.id == newOrder.id);
+
+          // Se o status mudou E o novo status não é 'pendente'
+          if (oldOrder.status != newOrder.status && newOrder.status != OrderStatus.pending) {
+            // Dispara a notificação
+            NotificationService().showNotification(
+              id: newOrder.createdAt.millisecondsSinceEpoch.remainder(100000), // ID único para identificação
+              title: 'Atualização do seu Pedido!', 
+              body: 'O status do seu pedido #${newOrder.id.substring(0, 6)} foi atualizado para ${newOrder.status.name.toUpperCase()}'
+            );
+          } 
+        } catch (e) {
+          // O 'firstWhere' dará um erro se não encontrar o pedido na lista antiga
+          // Isso é normal para um pedido recém criado
+        }
+      }
+      // --- FIM DA LÓGICA ---
+
+      // ATUALIZA A LISTA DE PEDIDOS E A UI
+      _orders = newOrders;
       _isOrdersLoading = false;
       _error = null;
       notifyListeners();

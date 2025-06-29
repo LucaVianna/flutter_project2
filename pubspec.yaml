@@ -40,6 +40,7 @@ dependencies:
   cloud_firestore: ^5.6.9
   provider: ^6.1.5
   intl: ^0.20.2
+  flutter_local_notifications: ^19.3.0
 
 # flutter pub run flutter_native_splash:create
 flutter_native_splash:

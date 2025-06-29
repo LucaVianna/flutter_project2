@@ -7,6 +7,9 @@ import 'features/auth/presentation/pages/welcome_screen.dart';
 // TEMA
 import 'core/theme/app_theme.dart';
 
+// NOTIFICATION SERVICE
+import 'core/services/notification_service.dart';
+
 // GLOBAL KEY PARA NAVEGAÇÃO
 import 'core/services/navigation_service.dart';
 
@@ -24,11 +27,13 @@ import 'features/home/presentation/providers/product_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await NotificationService().initialize();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await initializeDateFormatting('pt-br', null); // inicializando intl
+  await initializeDateFormatting('pt-BR', null); // inicializando intl
 
   runApp(
     MultiProvider(
