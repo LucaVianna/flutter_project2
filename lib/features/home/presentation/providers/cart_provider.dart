@@ -97,6 +97,7 @@ class CartProvider with ChangeNotifier {
       } else {
         _items.remove(productId);
       }
+      notifyListeners();
     }
   }
 

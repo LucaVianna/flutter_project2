@@ -6,6 +6,7 @@ import 'tabs/favorite_screen.dart';
 import 'tabs/order_screen.dart';
 import 'tabs/cart_screen.dart';
 import 'tabs/profile_screen.dart';
+import '../../../../core/services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +27,14 @@ class _HomeScreenState extends State<HomeScreen> {
     FavoriteScreen(),
     ProfileScreen(),
   ];
+
+  // --- NOVO MÉTODO PARA PERMISSÃO DE NOTIFICAÇÃO
+  @override
+  void initState() {
+    super.initState();
+    // Solicita assim que a tela é carregada
+    NotificationService().requestAndroidPermission();
+  }
 
   void _onItemTapped(int index) {
     setState(() {

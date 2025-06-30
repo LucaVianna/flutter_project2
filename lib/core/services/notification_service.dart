@@ -24,12 +24,11 @@ class NotificationService {
     // Inicializa o plugin com as configurações
     await _notificationsPlugin.initialize(initializationSettings);
 
-    // Pede permissão de notificações para o usuário no Android (Android 13+)
-    _requestAndroidPermission();
+    // Removemos o pedido de permissão aqui
   }
 
-  // Pede a parmissão de notificação no Android
-  Future<void> _requestAndroidPermission() async {
+  // Pede a parmissão de notificação no Android (MUDANÇA PARA MÉTODO PÚBLICO)
+  Future<void> requestAndroidPermission() async {
     await _notificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
   }
