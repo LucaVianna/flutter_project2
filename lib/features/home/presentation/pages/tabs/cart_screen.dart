@@ -1,9 +1,10 @@
 // Caminho lib/features/home/presentation/pages/tabs/cart_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:nectar_online_groceries/features/home/presentation/providers/order_provider.dart';
+import 'package:nectar_online_groceries/features/home/presentation/pages/tabs/qr_scanner_screen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
+import '../../providers/order_provider.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -131,6 +132,11 @@ class _CartScreenState extends State<CartScreen> {
               },
             ),
           ),
+
+          // --- CHAMADA PARA A NOVA SEÇÃO DE CUPONS ---
+          _buildCouponSection(context, cartProvider),
+          // -------------------------------------------
+
           // --- CARD DE RESUMO DO PEDIDO ---
           Card(
             margin: const EdgeInsets.all(10),
@@ -209,5 +215,53 @@ class _CartScreenState extends State<CartScreen> {
         ],
       ),
     );
+  }
+
+  // --- NOVO WIDGET AUXILIAR PARA A SEÇÃO DE CUPOM ---
+  Widget _buildCouponSection(BuildContext context, CartProvider cartProvider) {
+    final appliedCoupon = cartProvider.appliedCoupon;
+
+    // Se um cupom já foi aplicado
+    if (appliedCoupon != null) {
+      return Card(
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: ListTile(
+          leading: const Icon(Icons.confirmation_number, color: Colors.green),
+          title: Text(
+            'Cupom Aplicado: ${appliedCoupon.code}'
+          ),
+          subtitle: Text(
+            'Desconto de ${appliedCoupon.discountValue.toStringAsFixed(2)}% aplicado!',
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              // Chama o método para remover o cupom
+              cartProvider.removeCoupon();
+            }, 
+            icon: const Icon(
+              Icons.close,
+              color: Colors.red,
+            )
+          ),
+        ),
+      );
+    } else {
+      // Se não houver cupom aplicado
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: OutlinedButton.icon(
+          icon: const Icon(Icons.qr_code_scanner),
+          onPressed: () {
+            // Navega para a nova tela de scanner
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (ctx) => const QrScannerScreen())
+            );
+          }, 
+          label: const Text(
+            'Adicionar Cupom de Desconto'
+          ),
+        ),
+      );
+    }
   }
 }
